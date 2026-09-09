@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Руководство разработчика: Jetpack Compose Tutorials</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        line-height: 1.6;
+        color: #2c3e50;
+        background: #f5f7fa;
+    }
+    
+    .container {
+        display: flex;
+        min-height: 100vh;
+    }
+    
+    /* Боковая навигация */
+    .sidebar {
+        width: 280px;
+        background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 2rem 1rem;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .sidebar h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid rgba(255,255,255,0.2);
+    }
+    
+    .sidebar ul {
+        list-style: none;
+    }
+    
+    .sidebar li {
+        margin-bottom: 0.5rem;
+    }
+    
+    .sidebar a {
+        color: rgba(255,255,255,0.85);
+        text-decoration: none;
+        display: block;
+        padding: 0.5rem 0.8rem;
+        border-radius: 6px;
+        transition: all 0.2s;
+        font-size: 0.95rem;
+    }
+    
+    .sidebar a:hover {
+        background: rgba(255,255,255,0.15);
+        color: white;
+        transform: translateX(4px);
+    }
+    
+    .sidebar .section-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.5);
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+        padding-left: 0.8rem;
+        letter-spacing: 1px;
+    }
+    
+    /* Основной контент */
+    .content {
+        flex: 1;
+        margin-left: 280px;
+        padding: 2rem 3rem;
+        max-width: 1200px;
+    }
+    
+    header.hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 3rem;
+        border-radius: 16px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    }
+    
+    header.hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    header.hero p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+    
+    .meta-info {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+    }
+    
+    .badge {
+        background: rgba(255,255,255,0.2);
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        backdrop-filter: blur(10px);
+    }
+    
+    section {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    
+    section h2 {
+        color: #1e3c72;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid #667eea;
+        display: inline-block;
+    }
+    
+    section h3 {
+        color: #2a5298;
+        font-size: 1.3rem;
+        margin: 1.5rem 0 0.8rem;
+    }
+    
+    section h4 {
+        color: #34495e;
+        font-size: 1.1rem;
+        margin: 1rem 0 0.5rem;
+    }
+    
+    p {
+        margin-bottom: 1rem;
+    }
+    
+    ul, ol {
+        margin-left: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    li {
+        margin-bottom: 0.5rem;
+    }
+    
+    /* Блоки кода */
+    pre {
+        background: #1e1e2e;
+        color: #cdd6f4;
+        padding: 1.2rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 1rem 0;
+        font-family: 'Fira Code', 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.5;
+        box-shadow: inset 0 2px 6px rgba(0,0,0,0.2);
+    }
+    
+    code {
+        font-family: 'Fira Code', 'Courier New', monospace;
+    }
+    
+    p code, li code {
+        background: #eef2ff;
+        color: #4c51bf;
+        padding: 0.15rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+    }
+    
+    .keyword { color: #cba6f7; }
+    .string { color: #a6e3a1; }
+    .comment { color: #6c7086; font-style: italic; }
+    .function { color: #89b4fa; }
+    .annotation { color: #f9e2af; }
+    .number { color: #fab387; }
+    
+    /* Информационные блоки */
+    .info-box {
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        margin: 1.5rem 0;
+        border-left: 4px solid;
+    }
+    
+    .info-box.warning {
+        background: #fef3c7;
+        border-color: #f59e0b;
+        color: #78350f;
+    }
+    
+    .info-box.danger {
+        background: #fee2e2;
+        border-color: #ef4444;
+        color: #7f1d1d;
+    }
+    
+    .info-box.success {
+        background: #d1fae5;
+        border-color: #10b981;
+        color: #064e3b;
+    }
+    
+    .info-box.info {
+        background: #dbeafe;
+        border-color: #3b82f6;
+        color: #1e3a8a;
+    }
+    
+    .info-box strong {
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+    
+    /* Шаги */
+    .step {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        padding: 1.2rem;
+        margin: 1rem 0;
+        position: relative;
+        padding-left: 4rem;
+    }
+    
+    .step-number {
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        width: 2.2rem;
+        height: 2.2rem;
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+    }
+    
+    .step h4 {
+        margin-top: 0;
+        color: #1e3c72;
+    }
+    
+    /* Таблица */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    th {
+        background: #2a5298;
+        color: white;
+        padding: 0.8rem;
+        text-align: left;
+        font-weight: 600;
+    }
+    
+    td {
+        padding: 0.8rem;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    tr:nth-child(even) {
+        background: #f8fafc;
+    }
+    
+    tr:hover {
+        background: #eef2ff;
+    }
+    
+    /* Список файлов */
+    .file-tree {
+        background: #27272a;
+        color: #fafafa;
+        padding: 1.2rem;
+        border-radius: 8px;
+        font-family: 'Fira Code', monospace;
+        font-size: 0.9rem;
+        line-height: 1.8;
+    }
+    
+    .file-tree .folder { color: #fbbf24; }
+    .file-tree .file { color: #a3e635; }
+    .file-tree .highlight { color: #f472b6; font-weight: bold; }
+    
+    footer {
+        text-align: center;
+        padding: 2rem;
+        color: #64748b;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 3rem;
+    }
+    
+    @media (max-width: 900px) {
+        .sidebar { display: none; }
+        .content { margin-left: 0; padding: 1rem; }
+        header.hero h1 { font-size: 1.8rem; }
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Боковая навигация -->
+    <nav class="sidebar">
+        <h2>📖 Навигация</h2>
+        <ul>
+            <li class="section-label">Начало</li>
+            <li><a href="#intro">Введение</a></li>
+            <li><a href="#prereq">Требования</a></li>
+            
+            <li class="section-label">Часть 1: Диагностика</li>
+            <li><a href="#diagnosis">Анализ ошибок</a></li>
+            <li><a href="#fixes">Исправления</a></li>
+            
+            <li class="section-label">Часть 2: Код</li>
+            <li><a href="#code-review">Обзор Compose</a></li>
+            <li><a href="#components">Компоненты</a></li>
+            
+            <li class="section-label">Часть 3: Создание</li>
+            <li><a href="#step1">1. Новый проект</a></li>
+            <li><a href="#step2">2. Корневые файлы</a></li>
+            <li><a href="#step3">3. Version Catalog</a></li>
+            <li><a href="#step4">4. Модуль</a></li>
+            <li><a href="#step5">5. Manifest</a></li>
+            <li><a href="#step6">6. Compose-код</a></li>
+            <li><a href="#step7">7. Запуск</a></li>
+            
+            <li class="section-label">Завершение</li>
+            <li><a href="#conclusion">Итоги</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Основной контент -->
+    <main class="content">
+        <!-- Hero-блок -->
+        <header class="hero" id="intro">
+            <h1>🚀 Руководство разработчика</h1>
+            <p>Jetpack Compose Tutorials — от создания проекта до запуска приложения</p>
+            <div class="meta-info">
+                <span class="badge">📅 Версия: 2026</span>
+                <span class="badge">🎯 Kotlin</span>
+                <span class="badge">📱 Android Studio</span>
+                <span class="badge">🎨 Jetpack Compose</span>
+            </div>
+        </header>
+        
+        <!-- Введение -->
+        <section>
+            <h2>Введение</h2>
+            <p>Это полное руководство по созданию учебного Android-проекта на Jetpack Compose. Мы последовательно:</p>
+            <ol>
+                <li><strong>Проанализируем ошибки сборки</strong> — поймём, почему Gradle не мог найти зависимости</li>
+                <li><strong>Изучим учебный Compose-код</strong> — разберём основы Layout</li>
+                <li><strong>Создадим рабочий проект</strong> — пошагово соберём всё с нуля</li>
+            </ol>
+            
+            <div class="info-box info">
+                <strong>💡 Для кого это руководство?</strong>
+                Для начинающих Android-разработчиков, которые хотят понять современный подход к разработке приложений с Jetpack Compose, Kotlin DSL и Version Catalog.
+            </div>
+        </section>
+        
+        <!-- Требования -->
+        <section id="prereq">
+            <h2>Требования к окружению</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Компонент</th>
+                        <th>Версия</th>
+                        <th>Примечание</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Android Studio</td>
+                        <td>Iguana или новее</td>
+                        <td>С поддержкой Kotlin DSL</td>
+                    </tr>
+                    <tr>
+                        <td>JDK</td>
+                        <td>17 или выше</td>
+                        <td>Встроенная в AS</td>
+                    </tr>
+                    <tr>
+                        <td>Android SDK</td>
+                        <td>API 35 (Android 15)</td>
+                        <td>compileSdk</td>
+                    </tr>
+                    <tr>
+                        <td>Gradle</td>
+                        <td>8.9+</td>
+                        <td>Будет загружен автоматически</td>
+                    </tr>
+                    <tr>
+                        <td>Kotlin</td>
+                        <td>2.0.21</td>
+                        <td>С Compose Compiler Plugin</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Часть 1: Диагностика -->
+        <section id="diagnosis">
+            <h2>Часть 1: Анализ ошибок сборки</h2>
+            
+            <p>При попытке собрать проект <code>Jetpack-Compose-Tutorials</code> мы столкнулись с 8 параллельными ошибками. Все они сводились к одной причине:</p>
+            
+            <pre><code><span class="comment">// Ключевая ошибка из логов Gradle</span>
+Could not find com.google.accompanist:accompanist-systemuicontroller:0.37.3.
+Searched in the following locations:
+  - https://dl.google.com/dl/android/maven2/...
+  - https://repo.maven.apache.org/maven2/...
+  - https://jitpack.io/...</code></pre>
+            
+            <h3>🔍 Основные проблемы</h3>
+            
+            <h4>1. Несуществующая версия библиотеки</h4>
+            <p>Версия <code>0.37.3</code> библиотеки <code>accompanist-systemuicontroller</code> никогда не выпускалась. Библиотека была объявлена deprecated, и её последний релиз — <code>0.36.0</code>.</p>
+            
+            <h4>2. Устаревший ID плагина</h4>
+            <pre><code><span class="comment">// Устаревший ID</span>
+com.github.ben-manes.versions
+
+<span class="comment">// Актуальный ID</span>
+io.github.ben-manes.versions</code></pre>
+            
+            <h4>3. Deprecated-флаги в gradle.properties</h4>
+            <p>AGP 9.0+ изменил значения по умолчанию для многих флагов. Явное задание старых значений вызывало предупреждения:</p>
+            <ul>
+                <li><code>android.usesSdkInManifest.disallowed=false</code></li>
+                <li><code>android.sdk.defaultTargetSdkToCompileSdkIfUnset=false</code></li>
+                <li><code>android.enableAppCompileTimeRClass=false</code></li>
+                <li><code>android.builtInKotlin=false</code></li>
+                <li><code>android.newDsl=false</code></li>
+                <li><code>android.r8.optimizedResourceShrinking=false</code></li>
+                <li><code>android.defaults.buildfeatures.resvalues=true</code></li>
+                <li><code>android.nonFinalResIds=false</code></li>
+            </ul>
+        </section>
+        
+        <section id="fixes">
+            <h2>Исправления, применённые в проекте</h2>
+            
+            <div class="info-box success">
+                <strong>✅ Три ключевых исправления</strong>
+                <p>Все три проблемы были решены до создания проекта, чтобы он собрался с первого запуска.</p>
+            </div>
+            
+            <h3>Исправление 1: Версия accompanist-systemuicontroller</h3>
+            <p>В файле <code>libs.versions.toml</code> добавлена отдельная версия:</p>
+            <pre><code><span class="comment">[versions]</span>
+accompanist = <span class="string">"0.37.3"</span>           <span class="comment"># для остальных библиотек</span>
+accompanistSystemUi = <span class="string">"0.36.0"</span>   <span class="comment"># исправлено!</span>
+
+<span class="comment">[libraries]</span>
+accompanist-systemuicontroller = {
+    module = <span class="string">"com.google.accompanist:accompanist-systemuicontroller"</span>,
+    version.ref = <span class="string">"accompanistSystemUi"</span>
+}</code></pre>
+            
+            <h3>Исправление 2: Опечатка в коде</h3>
+            <p>В файле <code>Tutorial2_10_3BottomDrawer.kt</code> была опечатка:</p>
+            <pre><code><span class="comment">// Было (с пробелом — не скомпилируется):</span>
+<span class="function">scope</span>.<span class="function">launch</span> { d rawerState.<span class="function">close</span>() }
+
+<span class="comment">// Стало:</span>
+<span class="function">scope</span>.<span class="function">launch</span> { drawerState.<span class="function">close</span>() }</code></pre>
+            
+            <h3>Исправление 3: Очистка gradle.properties</h3>
+            <p>Удалены устаревшие флаги, добавлен рекомендуемый для производительности:</p>
+            <pre><code><span class="comment"># Рекомендуется для больших проектов</span>
+android.dependency.excludeLibraryComponentsFromConstraints=<span class="keyword">true</span></code></pre>
+        </section>
+        
+        <!-- Часть 2: Обзор кода -->
+        <section id="code-review">
+            <h2>Часть 2: Обзор Compose-кода</h2>
+            
+            <p>Исходный код представляет собой интерактивный учебник по фундаментальным концепциям Jetpack Compose. Рассмотрим его структуру.</p>
+            
+            <h3>🎯 Назначение файла</h3>
+            <p>Файл служит самодостаточной шпаргалкой для разработчиков, начинающих изучать декларативный UI в Android. В нём наглядно демонстрируются:</p>
+            <ul>
+                <li><strong>Row</strong> — горизонтальное расположение элементов</li>
+                <li><strong>Column</strong> — вертикальное расположение элементов</li>
+                <li><strong>Box</strong> — наложение элементов по оси Z (как Stack)</li>
+                <li><strong>Modifier</strong> — изменение свойств компонентов</li>
+                <li><strong>Spacer и weight</strong> — управление пространством</li>
+            </ul>
+        </section>
+        
+        <section id="components">
+            <h2>Разбор ключевых компонентов</h2>
+            
+            <h3>📦 Row, Column, Box</h3>
+            <table>
+                <thead>
+                    <tr><th>Компонент</th><th>Назначение</th><th>Главный параметр</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>Row</code></td><td>Дети располагаались горизонтально</td><td><code>horizontalArrangement</code></td></tr>
+                    <tr><td><code>Column</code></td><td>Дети располагаются вертикально</td><td><code>verticalArrangement</code></td></tr>
+                    <tr><td><code>Box</code></td><td>Дети накладываются друг на друга</td><td><code>Alignment</code></td></tr>
+                </tbody>
+            </table>
+            
+            <h3>⚠️ Ключевой момент: Порядок модификаторов</h3>
+            <div class="info-box warning">
+                <strong>Порядок применения модификаторов имеет значение!</strong>
+                <p>Это одно из важнейших правил Compose, которое наглядно показано в примере <code>ColumnsAndRowPaddingsExample</code>.</p>
+            </div>
+            
+            <pre><code><span class="comment">// Вариант A: .background() применяется ПЕРВЫМ</span>
+<span class="comment">// → padding создаёт внутренний отступ для текста</span>
+<span class="keyword">val</span> modifierA = Modifier
+    .<span class="function">background</span>(Color.Yellow)
+    .<span class="function">padding</span>(<span class="number">15</span>.dp)
+
+<span class="comment">// Вариант B: .padding() применяется ПЕРВЫМ</span>
+<span class="comment">// → padding работает как margin (внешний отступ)</span>
+<span class="keyword">val</span> modifierB = Modifier
+    .<span class="function">padding</span>(<span class="number">10</span>.dp)
+    .<span class="function">background</span>(Color.Cyan)
+    .<span class="function">padding</span>(end = <span class="number">15</span>.dp)</code></pre>
+            
+            <h3>📏 Weight и Spacer</h3>
+            <p><code>Modifier.weight()</code> позволяет распределять оставшееся пространство пропорционально весам:</p>
+            <pre><code>Row(modifier = Modifier.fillMaxWidth()) {
+    Text(<span class="string">"Вес 2"</span>, modifier = Modifier.weight(<span class="number">2f</span>))
+    Spacer(modifier = Modifier.weight(<span class="number">1f</span>))  <span class="comment">// промежуток</span>
+    Text(<span class="string">"Вес 3"</span>, modifier = Modifier.weight(<span class="number">3f</span>))
+    Spacer(modifier = Modifier.weight(<span class="number">1f</span>))  <span class="comment">// промежуток</span>
+    Text(<span class="string">"Вес 4"</span>, modifier = Modifier.weight(<span class="number">4f</span>))
+}</code></pre>
+        </section>
+        
+        <!-- Часть 3: Пошаговое руководство -->
+        <section id="step1">
+            <h2>Часть 3: Создание проекта с нуля</h2>
+            
+            <div class="step">
+                <div class="step-number">1</div>
+                <h4>Создание нового проекта</h4>
+                <ol>
+                    <li>Откройте Android Studio → <strong>New Project</strong></li>
+                    <li>Выберите шаблон <strong>Empty Activity</strong> → <strong>Next</strong></li>
+                    <li>Заполните поля:
+                        <ul>
+                            <li><strong>Name:</strong> <code>ComposeTutorials</code></li>
+                            <li><strong>Package name:</strong> <code>com.smarttoolfactory.tutorial1_1basics</code></li>
+                            <li><strong>Language:</strong> Kotlin</li>
+                            <li><strong>Minimum SDK:</strong> API 24: Android 7.0 (Nougat)</li>
+                            <li><strong>Build configuration language:</strong> <strong>Kotlin DSL</strong></li>
+                        </ul>
+                    </li>
+                    <li>Нажмите <strong>Finish</strong></li>
+                </ol>
+                <div class="info-box warning">
+                    <strong>Переименуйте модуль app!</strong>
+                    <p>Правый клик по папке <code>app</code> → <strong>Refactor</strong> → <strong>Rename</strong> → <code>Tutorial1-1Basics</code></p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="step2">
+            <h2>Корневые файлы проекта</h2>
+            
+            <div class="step">
+                <div class="step-number">2</div>
+                <h4>Настройка settings.gradle.kts (корень)</h4>
+                <p>Переключите вид на <strong>Project</strong> (а не Android) и замените содержимое файла:</p>
+                
+                <pre><code><span class="keyword">pluginManagement</span> {
+    <span class="keyword">repositories</span> {
+        <span class="function">gradlePluginPortal</span>()
+        <span class="function">google</span>()
+        <span class="function">mavenCentral</span>()
+    }
+}
+
+<span class="keyword">plugins</span> {
+    <span class="function">id</span>(<span class="string">"org.gradle.toolchains.foojay-resolver-convention"</span>) <span class="keyword">version</span> <span class="string">"1.0.0"</span>
+}
+
+<span class="keyword">dependencyResolutionManagement</span> {
+    repositoriesMode.<span class="function">set</span>(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    <span class="keyword">repositories</span> {
+        <span class="function">google</span>()
+        <span class="function">mavenCentral</span>()
+        <span class="function">maven</span> { url = <span class="function">uri</span>(<span class="string">"https://jitpack.io"</span>) }
+    }
+}
+
+rootProject.name = <span class="string">"ComposeTutorials"</span>
+<span class="function">include</span>(<span class="string">":Tutorial1-1Basics"</span>)</code></pre>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">3</div>
+                <h4>Настройка build.gradle.kts (корень проекта)</h4>
+                <p>Здесь объявляются плагины, которые используются в модулях:</p>
+                
+                <pre><code><span class="keyword">plugins</span> {
+    <span class="function">alias</span>(libs.plugins.gradle.versions)
+    <span class="function">alias</span>(libs.plugins.version.catalog.update)
+    <span class="function">alias</span>(libs.plugins.android.application) <span class="keyword">apply</span> <span class="keyword">false</span>
+    <span class="function">alias</span>(libs.plugins.kotlin.android) <span class="keyword">apply</span> <span class="keyword">false</span>
+    <span class="function">alias</span>(libs.plugins.kotlin.parcelize) <span class="keyword">apply</span> <span class="keyword">false</span>
+    <span class="function">alias</span>(libs.plugins.compose) <span class="keyword">apply</span> <span class="keyword">false</span>
+    <span class="function">alias</span>(libs.plugins.jetbrains.kotlin.serialization) <span class="keyword">apply</span> <span class="keyword">false</span>
+    <span class="function">alias</span>(libs.plugins.ksp) <span class="keyword">apply</span> <span class="keyword">false</span>
+    <span class="function">alias</span>(libs.plugins.hilt) <span class="keyword">apply</span> <span class="keyword">false</span>
+}</code></pre>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">4</div>
+                <h4>Оптимизация gradle.properties (корень)</h4>
+                <p>Современная конфигурация без deprecated-флагов:</p>
+                
+                <pre><code>org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-<span class="number">8</span>
+android.useAndroidX=<span class="keyword">true</span>
+kotlin.code.style=official
+
+<span class="comment"># Современные настройки AGP</span>
+android.nonTransitiveRClass=<span class="keyword">true</span>
+android.nonFinalResIds=<span class="keyword">true</span>
+android.defaults.buildfeatures.resvalues=<span class="keyword">false</span>
+android.enableAppCompileTimeRClass=<span class="keyword">true</span>
+android.r8.optimizedResourceShrinking=<span class="keyword">true</span>
+android.builtInKotlin=<span class="keyword">true</span>
+android.newDsl=<span class="keyword">true</span>
+
+<span class="comment"># Производительность</span>
+android.dependency.excludeLibraryComponentsFromConstraints=<span class="keyword">true</span></code></pre>
+            </div>
+        </section>
+        
+        <section id="step3">
+            <h2>Настройка Version Catalog</h2>
+            
+            <div class="step">
+                <div class="step-number">5</div>
+                <h4>Файл gradle/libs.versions.toml</h4>
+                <p>Это современный способ управления зависимостями. Обратите внимание на отдельную версию для <code>systemuicontroller</code>:</p>
+                
+                <pre><code><span class="comment">[versions]</span>
+accompanist = <span class="string">"0.37.3"</span>
+accompanistSystemUi = <span class="string">"0.36.0"</span>  <span class="comment"># 🎯 КЛЮЧЕВОЕ ИСПРАВЛЕНИЕ</span>
+androidGradlePlugin = <span class="string">"8.5.2"</span>
+androidx-activity-compose = <span class="string">"1.9.3"</span>
+androidx-compose-bom = <span class="string">"2024.10.00"</span>
+androidx-corektx = <span class="string">"1.15.0"</span>
+compileSdk = <span class="string">"35"</span>
+kotlin = <span class="string">"2.0.21"</span>
+minSdk = <span class="string">"24"</span>
+targetSdk = <span class="string">"35"</span>
+<span class="comment"># ... остальные версии</span>
+
+<span class="comment">[libraries]</span>
+accompanist-systemuicontroller = {
+    module = <span class="string">"com.google.accompanist:accompanist-systemuicontroller"</span>,
+    version.ref = <span class="string">"accompanistSystemUi"</span>  <span class="comment"># 🎯 используем особую версию</span>
+}
+<span class="comment"># ... остальные библиотеки</span></code></pre>
+                
+                <div class="info-box info">
+                    <strong>💡 Почему Version Catalog?</strong>
+                    <p>Позволяет управлять всеми версиями из одного места, поддерживает автодополнение в IDE и обеспечивает типобезопасность.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="step4">
+            <h2>Настройка модуля приложения</h2>
+            
+            <div class="step">
+                <div class="step-number">6</div>
+                <h4>Файл Tutorial1-1Basics/build.gradle.kts</h4>
+                
+                <pre><code><span class="keyword">plugins</span> {
+    <span class="function">alias</span>(libs.plugins.android.application)
+    <span class="function">alias</span>(libs.plugins.kotlin.android)
+    <span class="function">alias</span>(libs.plugins.kotlin.parcelize)
+    <span class="function">alias</span>(libs.plugins.compose)
+}
+
+<span class="keyword">android</span> {
+    namespace = <span class="string">"com.smarttoolfactory.tutorial1_1basics"</span>
+    compileSdk = libs.versions.compileSdk.<span class="function">get</span>().<span class="function">toInt</span>()
+
+    <span class="keyword">defaultConfig</span> {
+        applicationId = <span class="string">"com.smarttoolfactory.tutorial1_1basics"</span>
+        minSdk = libs.versions.minSdk.<span class="function">get</span>().<span class="function">toInt</span>()
+        targetSdk = libs.versions.targetSdk.<span class="function">get</span>().<span class="function">toInt</span>()
+        versionCode = <span class="number">1</span>
+        versionName = <span class="string">"1.0"</span>
+    }
+
+    <span class="keyword">compileOptions</span> {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    <span class="keyword">kotlinOptions</span> {
+        jvmTarget = <span class="string">"17"</span>
+    }
+
+    <span class="keyword">buildFeatures</span> {
+        compose = <span class="keyword">true</span>
+    }
+}
+
+<span class="keyword">dependencies</span> {
+    <span class="keyword">val</span> composeBom = <span class="function">platform</span>(libs.androidx.compose.bom)
+    <span class="function">implementation</span>(composeBom)
+
+    <span class="function">implementation</span>(libs.kotlin.stdlib)
+    <span class="function">implementation</span>(libs.androidx.core.ktx)
+    <span class="function">implementation</span>(libs.androidx.activity.compose)
+    <span class="function">implementation</span>(libs.androidx.compose.ui)
+    <span class="function">implementation</span>(libs.androidx.compose.foundation)
+    <span class="function">implementation</span>(libs.androidx.compose.material3)
+    <span class="function">implementation</span>(libs.accompanist.systemuicontroller)
+    <span class="comment">// ... остальные зависимости</span>
+}</code></pre>
+            </div>
+        </section>
+        
+        <section id="step5">
+            <h2>Настройка AndroidManifest.xml</h2>
+            
+            <div class="step">
+                <div class="step-number">7</div>
+                <h4>Файл Tutorial1-1Basics/src/main/AndroidManifest.xml</h4>
+                
+                <pre><code><span class="comment">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span>
+<span class="keyword">&lt;manifest</span> xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;uses-permission</span> android:name=<span class="string">"android.permission.INTERNET"</span><span class="keyword">/&gt;</span>
+    
+    <span class="keyword">&lt;application</span>
+        android:allowBackup=<span class="string">"true"</span>
+        android:icon=<span class="string">"@mipmap/ic_launcher"</span>
+        android:label=<span class="string">"@string/app_name"</span>
+        android:theme=<span class="string">"@style/Theme.ComposeTutorials"</span><span class="keyword">&gt;</span>
+        <span class="keyword">&lt;activity</span>
+            android:name=<span class="string">".MainActivity"</span>
+            android:exported=<span class="string">"true"</span><span class="keyword">&gt;</span>
+            <span class="keyword">&lt;intent-filter&gt;</span>
+                <span class="keyword">&lt;action</span> android:name=<span class="string">"android.intent.action.MAIN"</span> <span class="keyword">/&gt;</span>
+                <span class="keyword">&lt;category</span> android:name=<span class="string">"android.intent.category.LAUNCHER"</span> <span class="keyword">/&gt;</span>
+            <span class="keyword">&lt;/intent-filter&gt;</span>
+        <span class="keyword">&lt;/activity&gt;</span>
+    <span class="keyword">&lt;/application&gt;</span>
+<span class="keyword">&lt;/manifest&gt;</span></code></pre>
+            </div>
+        </section>
+        
+        <section id="step6">
+            <h2>Добавление Compose-кода</h2>
+            
+            <div class="step">
+                <div class="step-number">8</div>
+                <h4>Структура файлов</h4>
+                <div class="file-tree">
+<span class="folder">📁 Tutorial1-1Basics/</span>
+  <span class="folder">📁 src/main/</span>
+    <span class="file">📄 AndroidManifest.xml</span>
+    <span class="folder">📁 java/com/smarttoolfactory/tutorial1_1basics/</span>
+      <span class="file">📄 MainActivity.kt</span>
+      <span class="file">📄 Tutorial1_1Screen.kt  <span class="highlight">← основы Layout</span></span>
+      <span class="file">📄 Tutorial2_10_3BottomDrawer.kt  <span class="highlight">← нижняя шторка</span></span>
+    <span class="folder">📁 res/values/</span>
+      <span class="file">📄 strings.xml</span>
+      <span class="file">📄 themes.xml</span>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">9</div>
+                <h4>MainActivity.kt — точка входа</h4>
+                
+                <pre><code><span class="keyword">package</span> com.smarttoolfactory.tutorial1_1basics
+
+<span class="keyword">import</span> android.os.Bundle
+<span class="keyword">import</span> androidx.activity.ComponentActivity
+<span class="keyword">import</span> androidx.activity.compose.setContent
+<span class="keyword">import</span> androidx.compose.material3.MaterialTheme
+
+<span class="keyword">class</span> <span class="function">MainActivity</span> : ComponentActivity() {
+    <span class="annotation">@Override</span>
+    <span class="keyword">override fun</span> <span class="function">onCreate</span>(savedInstanceState: Bundle?) {
+        <span class="keyword">super</span>.<span class="function">onCreate</span>(savedInstanceState)
+        <span class="function">setContent</span> {
+            MaterialTheme {
+                <span class="function">Tutorial2_10Screen3</span>()
+            }
+        }
+    }
+}</code></pre>
+            </div>
+        </section>
+        
+        <section id="step7">
+            <h2>Синхронизация и запуск</h2>
+            
+            <div class="step">
+                <div class="step-number">10</div>
+                <h4>Синхронизация Gradle</h4>
+                <ol>
+                    <li>В верхнем правом углу появится сообщение <strong>"Gradle files have changed"</strong></li>
+                    <li>Нажмите <strong>Sync Now</strong></li>
+                    <li>Дождитесь зеленой галочки <strong>BUILD SUCCESSFUL</strong></li>
+                </ol>
+                <div class="info-box warning">
+                    <strong>Если Sync Failed</strong>
+                    <p>Проверьте, что в <code>libs.versions.toml</code> для <code>accompanist-systemuicontroller</code> используется версия <code>0.36.0</code>, а не <code>0.37.3</code>.</p>
+                </div>
+            </div>
+            
+            <div class="step">
+                <div class="step-number">11</div>
+                <h4>Запуск приложения</h4>
+                <ol>
+                    <li>Выберите эмулятор или подключите устройство</li>
+                    <li>Нажмите зеленую кнопку <strong>Run</strong> (или <code>Shift+F10</code>)</li>
+                    <li>Дождитесь установки APK</li>
+                </ol>
+                
+                <div class="info-box success">
+                    <strong>🎉 Ожидаемый результат</strong>
+                    <p>Откроется экран с нижней шторкой (BottomDrawer), которую можно:</p>
+                    <ul>
+                        <li>Открывать кнопкой <strong>"Click to open"</strong></li>
+                        <li>Вытягивать свайпом вверх</li>
+                        <li>Закрывать кнопкой внутри шторки</li>
+                    </ul>
+                    <p>Чекбокс позволяет включать/отключать жесты свайпа.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Заключение -->
+        <section id="conclusion">
+            <h2>Итоги и дальнейшее развитие</h2>
+            
+            <h3>✅ Что вы получили</h3>
+            <ul>
+                <li>Полностью рабочее приложение на современном стеке</li>
+                <li>Использование Kotlin DSL и Version Catalog</li>
+                <li>Оптимизированную конфигурацию Gradle</li>
+                <li>Интерактивный пример с BottomDrawer</li>
+                <li>Проект без ошибок сборки и устаревших API</li>
+            </ul>
+            
+            <h3>🚀 Куда двигаться дальше</h3>
+            <ol>
+                <li><strong>Изучите другие модули</strong> — в исходном репозитории есть Tutorial2-1Unit-Testing, Tutorial2-2UI-Testing, Tutorial3-1Navigation</li>
+                <li><strong>Добавьте тесты</strong> — подключите JUnit 5 и Compose UI Testing</li>
+                <li><strong>Настройте CI/CD</strong> — GitHub Actions для автоматической сборки</li>
+                <li><strong>Изучите архитектуру</strong> — MVVM, MVI, Clean Architecture</li>
+                <li><strong>Публикуйте приложение</strong> — Google Play Console</li>
+            </ol>
+            
+            <div class="info-box info">
+                <strong>📚 Полезные ресурсы</strong>
+                <ul>
+                    <li><a href="https://developer.android.com/jetpack/compose" style="color: #1e3a8a;">Официальная документация Jetpack Compose</a></li>
+                    <li><a href="https://kotlinlang.org/docs/home.html" style="color: #1e3a8a;">Документация Kotlin</a></li>
+                    <li><a href="https://google.github.io/accompanist/" style="color: #1e3a8a;">Accompanist Libraries</a></li>
+                    <li><a href="https://developer.android.com/build" style="color: #1e3a8a;">Android Build System</a></li>
+                </ul>
+            </div>
+        </section>
+        
+        <footer>
+            <p><strong>Руководство разработчика Compose Tutorials</strong></p>
+            <p>Создано для начинающих Android-разработчиков | 2026</p>
+        </footer>
+    </main>
+</div>
+
+</body>
+</html>

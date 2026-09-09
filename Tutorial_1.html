@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Руководство разработчика: Jetpack Compose Tutorials</title>
+<style>
+    :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #f5f7fa;
+        --bg-code: #1e1e1e;
+        --text-primary: #1a1a1a;
+        --text-secondary: #4a5568;
+        --accent: #4285f4;
+        --accent-hover: #3367d6;
+        --border: #e2e8f0;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --bg-code: #0d1117;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --accent: #60a5fa;
+        --accent-hover: #3b82f6;
+        --border: #334155;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.7;
+        transition: background 0.3s, color 0.3s;
+    }
+
+    .header {
+        background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+        color: white;
+        padding: 3rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+    }
+
+    .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+    }
+
+    .header p {
+        font-size: 1.1rem;
+        opacity: 0.95;
+    }
+
+    .theme-toggle {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        transition: all 0.3s;
+    }
+
+    .theme-toggle:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .toc {
+        background: var(--bg-secondary);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+    }
+
+    .toc h2 {
+        color: var(--accent);
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+    }
+
+    .toc ol {
+        list-style: none;
+        counter-reset: toc;
+    }
+
+    .toc ol li {
+        counter-increment: toc;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .toc ol li:last-child { border-bottom: none; }
+
+    .toc ol li::before {
+        content: counter(toc) ". ";
+        color: var(--accent);
+        font-weight: 700;
+        margin-right: 0.5rem;
+    }
+
+    .toc a {
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .toc a:hover { color: var(--accent); }
+
+    .stage {
+        background: var(--bg-secondary);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        border-left: 5px solid var(--accent);
+    }
+
+    .stage h2 {
+        color: var(--accent);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .stage-number {
+        background: var(--accent);
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .stage h3 {
+        margin: 1.5rem 0 0.75rem;
+        color: var(--text-primary);
+        font-size: 1.25rem;
+    }
+
+    .stage p { margin-bottom: 1rem; color: var(--text-secondary); }
+
+    .stage ul, .stage ol {
+        margin: 1rem 0 1rem 2rem;
+        color: var(--text-secondary);
+    }
+
+    .stage li { margin-bottom: 0.5rem; }
+
+    .stage strong { color: var(--text-primary); }
+
+    .code-block {
+        position: relative;
+        background: var(--bg-code);
+        border-radius: 8px;
+        margin: 1rem 0;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    .code-header {
+        background: #2d333b;
+        color: #adbac7;
+        padding: 0.5rem 1rem;
+        font-family: 'SF Mono', Monaco, Consolas, monospace;
+        font-size: 0.85rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #444c56;
+    }
+
+    [data-theme="dark"] .code-header {
+        background: #161b22;
+        color: #8b949e;
+        border-bottom: 1px solid #30363d;
+    }
+
+    .copy-btn {
+        background: transparent;
+        border: 1px solid #57606a;
+        color: #adbac7;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+        background: #57606a;
+        color: white;
+    }
+
+    .copy-btn.copied {
+        background: var(--success);
+        border-color: var(--success);
+        color: white;
+    }
+
+    .code-block pre {
+        padding: 1rem;
+        overflow-x: auto;
+        font-family: 'SF Mono', Monaco, Consolas, 'Courier New', monospace;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: #e6edf3;
+    }
+
+    .keyword { color: #ff7b72; }
+    .string { color: #a5d6ff; }
+    .comment { color: #8b949e; font-style: italic; }
+    .number { color: #79c0ff; }
+    .function { color: #d2a8ff; }
+    .class { color: #ffa657; }
+    .annotation { color: #ffa657; }
+
+    .info-box {
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        margin: 1rem 0;
+        border-left: 4px solid;
+    }
+
+    .info-box.tip {
+        background: #f0fdf4;
+        border-color: var(--success);
+        color: #166534;
+    }
+
+    [data-theme="dark"] .info-box.tip {
+        background: #052e16;
+        color: #86efac;
+    }
+
+    .info-box.warning {
+        background: #fffbeb;
+        border-color: var(--warning);
+        color: #92400e;
+    }
+
+    [data-theme="dark"] .info-box.warning {
+        background: #451a03;
+        color: #fcd34d;
+    }
+
+    .info-box.danger {
+        background: #fef2f2;
+        border-color: var(--danger);
+        color: #991b1b;
+    }
+
+    [data-theme="dark"] .info-box.danger {
+        background: #450a0a;
+        color: #fca5a5;
+    }
+
+    .info-box strong { display: block; margin-bottom: 0.25rem; }
+
+    .file-path {
+        font-family: 'SF Mono', Monaco, Consolas, monospace;
+        background: var(--bg-secondary);
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        color: var(--accent);
+        font-size: 0.9em;
+        border: 1px solid var(--border);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        background: var(--bg-primary);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    th, td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+    }
+
+    th {
+        background: var(--accent);
+        color: white;
+        font-weight: 600;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tr:hover { background: var(--bg-secondary); }
+
+    .footer {
+        text-align: center;
+        padding: 2rem;
+        color: var(--text-secondary);
+        border-top: 1px solid var(--border);
+        margin-top: 3rem;
+    }
+
+    @media (max-width: 768px) {
+        .header h1 { font-size: 1.8rem; }
+        .container { padding: 1rem; }
+        .stage { padding: 1.5rem; }
+        .theme-toggle { top: 1rem; right: 1rem; padding: 0.4rem 0.8rem; font-size: 0.85rem; }
+    }
+</style>
+</head>
+<body>
+
+<header class="header">
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Тема</button>
+    <h1>🚀 Руководство разработчика</h1>
+    <p>Jetpack Compose Tutorials — от нуля до первого рабочего приложения</p>
+</header>
+
+<div class="container">
+
+    <nav class="toc">
+        <h2>📚 Оглавление</h2>
+        <ol>
+            <li><a href="#stage1">Создание нового проекта в Android Studio</a></li>
+            <li><a href="#stage2">Настройка корневых файлов проекта</a></li>
+            <li><a href="#stage3">Настройка каталога версий (libs.versions.toml)</a></li>
+            <li><a href="#stage4">Настройка модуля приложения</a></li>
+            <li><a href="#stage5">Настройка Manifest и MainActivity</a></li>
+            <li><a href="#stage6">Основы Jetpack Compose: Row, Column, Box, Modifier</a></li>
+            <li><a href="#stage7">Исправление типичных ошибок сборки</a></li>
+            <li><a href="#stage8">Запуск и отладка приложения</a></li>
+        </ol>
+    </nav>
+
+    <section class="stage" id="stage1">
+        <h2><span class="stage-number">1</span> Создание нового проекта</h2>
+        <ol>
+            <li>Откройте Android Studio и нажмите <strong>New Project</strong>.</li>
+            <li>Выберите шаблон <strong>Empty Activity</strong> и нажмите <strong>Next</strong>.</li>
+            <li>Заполните поля проекта:
+                <ul>
+                    <li><strong>Name:</strong> <code>ComposeTutorials</code></li>
+                    <li><strong>Package name:</strong> <code>com.smarttoolfactory.tutorial1_1basics</code></li>
+                    <li><strong>Language:</strong> Kotlin</li>
+                    <li><strong>Minimum SDK:</strong> API 24: Android 7.0 (Nougat)</li>
+                    <li><strong>Build configuration language:</strong> Kotlin DSL</li>
+                </ul>
+            </li>
+            <li>Нажмите <strong>Finish</strong> и дождитесь индексации.</li>
+        </ol>
+
+        <div class="info-box tip">
+            <strong>💡 Совет: Переименование модуля</strong>
+            По умолчанию Android Studio создаёт модуль <code>app</code>. Чтобы привести структуру в соответствие с учебным кодом, выполните: <br>
+            ПКМ на папке <code>app</code> → <strong>Refactor</strong> → <strong>Rename</strong> → <code>Tutorial1-1Basics</code> → <strong>Do Refactor</strong>.
+        </div>
+    </section>
+
+    <section class="stage" id="stage2">
+        <h2><span class="stage-number">2</span> Настройка корневых файлов</h2>
+        <p>Переключите вид проекта с <strong>Android</strong> на <strong>Project</strong>, чтобы увидеть реальную файловую структуру.</p>
+
+        <h3>📄 <span class="file-path">settings.gradle.kts</span></h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span>Kotlin DSL</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre><span class="keyword">pluginManagement</span> {
+    <span class="keyword">repositories</span> {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+<span class="keyword">plugins</span> {
+    id(<span class="string">"org.gradle.toolchains.foojay-resolver-convention"</span>) version <span class="string">"1.0.0"</span>
+}
+<span class="keyword">dependencyResolutionManagement</span> {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    <span class="keyword">repositories</span> {
+        google()
+        mavenCentral()
+        maven { url = uri(<span class="string">"https://jitpack.io"</span>) }
+    }
+}
+rootProject.name = <span class="string">"ComposeTutorials"</span>
+include(<span class="string">":Tutorial1-1Basics"</span>)</pre>
+        </div>
+
+        <h3>📄 <span class="file-path">build.gradle.kts</span> (корневой)</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span>Kotlin DSL</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre><span class="keyword">plugins</span> {
+    alias(libs.plugins.gradle.versions)
+    alias(libs.plugins.version.catalog.update)
+    alias(libs.plugins.android.application) apply <span class="keyword">false</span>
+    alias(libs.plugins.kotlin.android) apply <span class="keyword">false</span>
+    alias(libs.plugins.kotlin.parcelize) apply <span class="keyword">false</span>
+    alias(libs.plugins.compose) apply <span class="keyword">false</span>
+    alias(libs.plugins.jetbrains.kotlin.serialization) apply <span class="keyword">false</span>
+    alias(libs.plugins.ksp) apply <span class="keyword">false</span>
+    alias(libs.plugins.hilt) apply <span class="keyword">false</span>
+}</pre>
+        </div>
+
+        <h3>📄 <span class="file-path">gradle.properties</span></h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span>Properties</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre>org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+android.useAndroidX=<span class="keyword">true</span>
+kotlin.code.style=official
+
+<span class="comment"># Современные настройки AGP</span>
+android.nonTransitiveRClass=<span class="keyword">true</span>
+android.nonFinalResIds=<span class="keyword">true</span>
+android.defaults.buildfeatures.resvalues=<span class="keyword">false</span>
+android.enableAppCompileTimeRClass=<span class="keyword">true</span>
+android.r8.optimizedResourceShrinking=<span class="keyword">true</span>
+android.builtInKotlin=<span class="keyword">true</span>
+android.newDsl=<span class="keyword">true</span>
+
+<span class="comment"># Производительность для больших проектов</span>
+android.dependency.excludeLibraryComponentsFromConstraints=<span class="keyword">true</span></pre>
+        </div>
+    </section>
+
+    <section class="stage" id="stage3">
+        <h2><span class="stage-number">3</span> Каталог версий (Version Catalog)</h2>
+        <p>Файл <span class="file-path">gradle/libs.versions.toml</span> — это современный способ централизованного управления зависимостями. Ниже приведён ключевой фрагмент с исправленной версией Accompanist.</p>
+
+        <div class="info-box danger">
+            <strong>⚠️ Критическое исправление</strong>
+            Версия <code>0.37.3</code> библиотеки <code>accompanist-systemuicontroller</code> <strong>не существует</strong> на Maven Central. Эта библиотека была помечена как устаревшая, и её последняя доступная версия — <code>0.36.0</code>. Именно это вызывало ошибку сборки <code>Could not find com.google.accompanist:accompanist-systemuicontroller:0.37.3</code>.
+        </div>
+
+        <h3>📄 <span class="file-path">gradle/libs.versions.toml</span> (фрагмент)</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span>TOML</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre>[versions]
+accompanist = <span class="string">"0.37.3"</span>
+accompanistSystemUi = <span class="string">"0.36.0"</span>   <span class="comment"># 🔥 Исправлено!</span>
+androidGradlePlugin = <span class="string">"8.5.2"</span>
+androidx-compose-bom = <span class="string">"2024.10.00"</span>
+androidx-compose-latest = <span class="string">"1.7.5"</span>
+compileSdk = <span class="string">"35"</span>
+kotlin = <span class="string">"2.0.21"</span>
+minSdk = <span class="string">"24"</span>
+targetSdk = <span class="string">"35"</span>
+
+[libraries]
+accompanist-systemuicontroller = {
+    module = <span class="string">"com.google.accompanist:accompanist-systemuicontroller"</span>,
+    version.ref = <span class="string">"accompanistSystemUi"</span>  <span class="comment"># 🔥 Использует отдельную версию</span>
+}
+accompanist-drawablepainter = {
+    module = <span class="string">"com.google.accompanist:accompanist-drawablepainter"</span>,
+    version.ref = <span class="string">"accompanist"</span>
+}
+
+[plugins]
+android-application = { id = <span class="string">"com.android.application"</span>, version.ref = <span class="string">"androidGradlePlugin"</span> }
+compose = { id = <span class="string">"org.jetbrains.kotlin.plugin.compose"</span>, version.ref = <span class="string">"kotlin"</span> }
+gradle-versions = { id = <span class="string">"io.github.ben-manes.versions"</span>, version.ref = <span class="string">"gradle-versions"</span> }</pre>
+        </div>
+    </section>
+
+    <section class="stage" id="stage4">
+        <h2><span class="stage-number">4</span> Настройка модуля приложения</h2>
+        <h3>📄 <span class="file-path">Tutorial1-1Basics/build.gradle.kts</span></h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span>Kotlin DSL</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre><span class="keyword">plugins</span> {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.compose)
+}
+
+<span class="keyword">android</span> {
+    namespace = <span class="string">"com.smarttoolfactory.tutorial1_1basics"</span>
+    compileSdk = libs.versions.compileSdk.get().toInt()
+
+    <span class="keyword">defaultConfig</span> {
+        applicationId = <span class="string">"com.smarttoolfactory.tutorial1_1basics"</span>
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = <span class="number">1</span>
+        versionName = <span class="string">"1.0"</span>
+    }
+
+    <span class="keyword">compileOptions</span> {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions { jvmTarget = <span class="string">"17"</span> }
+    buildFeatures { compose = <span class="keyword">true</span> }
+}
+
+<span class="keyword">dependencies</span> {
+    <span class="keyword">val</span> composeBom = platform(libs.androidx.compose.bom)
+    implementation(composeBom)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    <span class="comment"># Accompanist с исправленной версией</span>
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.accompanist.drawablepainter)
+}</pre>
+        </div>
+    </section>
+
+    <section class="stage" id="stage5">
+        <h2><span class="stage-number">5</span> Manifest и MainActivity</h2>
+
+        <h3>📄 <span class="file-path">AndroidManifest.xml</span></h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span>XML</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre>&lt;?xml version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;
+&lt;<span class="keyword">manifest</span> xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;
+    &lt;<span class="keyword">uses-permission</span> android:name=<span class="string">"android.permission.INTERNET"</span>/&gt;
+
+    &lt;<span class="keyword">application</span>
+        android:allowBackup=<span class="string">"true"</span>
+        android:icon=<span class="string">"@mipmap/ic_launcher"</span>
+        android:label=<span class="string">"@string/app_name"</span>
+        android:theme=<span class="string">"@style/Theme.ComposeTutorials"</span>&gt;
+        &lt;<span class="keyword">activity</span>
+            android:name=<span class="string">".MainActivity"</span>
+            android:exported=<span class="string">"true"</span>&gt;
+            &lt;<span class="keyword">intent-filter</span>&gt;
+                &lt;<span class="keyword">action</span> android:name=<span class="string">"android.intent.action.MAIN"</span> /&gt;
+                &lt;<span class="keyword">category</span> android:name=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;
+            &lt;/<span class="keyword">intent-filter</span>&gt;
+        &lt;/<span class="keyword">activity</span>&gt;
+    &lt;/<span class="keyword">application</span>&gt;
+&lt;/<span class="keyword">manifest</span>&gt;</pre>
+        </div>
+
+        <h3>📄 <span class="file-path">MainActivity.kt</span></h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span>Kotlin</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre><span class="keyword">package</span> com.smarttoolfactory.tutorial1_1basics
+
+<span class="keyword">import</span> android.os.Bundle
+<span class="keyword">import</span> androidx.activity.ComponentActivity
+<span class="keyword">import</span> androidx.activity.compose.setContent
+<span class="keyword">import</span> androidx.compose.material3.MaterialTheme
+<span class="keyword">import</span> androidx.compose.material3.Surface
+<span class="keyword">import</span> androidx.compose.foundation.layout.fillMaxSize
+<span class="keyword">import</span> androidx.compose.ui.Modifier
+
+<span class="keyword">class</span> <span class="class">MainActivity</span> : ComponentActivity() {
+    <span class="keyword">override fun</span> <span class="function">onCreate</span>(savedInstanceState: Bundle?) {
+        <span class="keyword">super</span>.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    <span class="function">Tutorial1_1Screen</span>()
+                }
+            }
+        }
+    }
+}</pre>
+        </div>
+    </section>
+
+    <section class="stage" id="stage6">
+        <h2><span class="stage-number">6</span> Основы Jetpack Compose</h2>
+        <p>Учебный код демонстрирует четыре фундаментальных концепции компоновки:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Компонент</th>
+                    <th>Назначение</th>
+                    <th>Аналог в XML</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>Row</code></td>
+                    <td>Горизонтальное расположение детей</td>
+                    <td>LinearLayout (horizontal)</td>
+                </tr>
+                <tr>
+                    <td><code>Column</code></td>
+                    <td>Вертикальное расположение детей</td>
+                    <td>LinearLayout (vertical)</td>
+                </tr>
+                <tr>
+                    <td><code>Box</code></td>
+                    <td>Наложение детей (ось Z)</td>
+                    <td>FrameLayout</td>
+                </tr>
+                <tr>
+                    <td><code>Modifier</code></td>
+                    <td>Свойства: размер, фон, отступы, клик</td>
+                    <td>XML-атрибуты</td>
+                </tr>
+                <tr>
+                    <td><code>Spacer</code></td>
+                    <td>Пустое пространство + weight</td>
+                    <td>Space / weight</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>🔥 Важнейшее правило: Порядок модификаторов</h3>
+        <div class="info-box warning">
+            <strong>Порядок модификаторов имеет решающее значение!</strong>
+            В Compose модификаторы применяются <strong>сверху вниз</strong>. Один и тот же набор модификаторов в разном порядке даёт кардинально разный результат.
+        </div>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span>Сравнение двух подходов</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre><span class="comment">// 🔴 Вариант A: фон сначала, потом padding</span>
+<span class="comment">// Результат: фон закрашивает ВЕСЬ блок, padding ВНУТРЕННИЙ</span>
+Modifier
+    .<span class="function">background</span>(Color.Yellow)
+    .<span class="function">padding</span>(<span class="number">15</span>.dp)
+
+<span class="comment">// 🔵 Вариант B: padding сначала, потом фон</span>
+<span class="comment">// Результат: padding создаёт ВНЕШНИЙ отступ (как margin), фон только внутри</span>
+Modifier
+    .<span class="function">padding</span>(<span class="number">10</span>.dp)
+    .<span class="function">background</span>(Color.Cyan)</pre>
+        </div>
+
+        <h3>📐 Weight и распределение пространства</h3>
+        <p>Модификатор <code>weight()</code> работает только внутри <code>Row</code> или <code>Column</code> и распределяет <strong>оставшееся</strong> свободное пространство пропорционально заданным значениям.</p>
+
+        <div class="code-block">
+            <div class="code-header">
+                <span>Kotlin</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre>Row {
+    Text(<span class="string">"Вес 2"</span>, modifier = Modifier.weight(<span class="number">2f</span>))
+    Spacer(modifier = Modifier.weight(<span class="number">1f</span>))  <span class="comment">// Пустой промежуток</span>
+    Text(<span class="string">"Вес 3"</span>, modifier = Modifier.weight(<span class="number">3f</span>))
+    Text(<span class="string">"Вес 4"</span>, modifier = Modifier.weight(<span class="number">4f</span>))
+}
+<span class="comment">// Сумма весов = 10, ширина делится: 20% | 10% | 30% | 40%</span></pre>
+        </div>
+
+        <h3>🗂 Box и Z-ось</h3>
+        <p>В <code>Box</code> элементы объявляются последовательно, и <strong>каждый следующий рисуется поверх предыдущего</strong>:</p>
+        <div class="code-block">
+            <div class="code-header">
+                <span>Kotlin</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre>Box {
+    Text(<span class="string">"Первый"</span>, Modifier.size(<span class="number">200</span>.dp))  <span class="comment">// Внизу (фон)</span>
+    Text(<span class="string">"Второй"</span>, Modifier.size(<span class="number">150</span>.dp))  <span class="comment">// Посередине</span>
+    Text(<span class="string">"Третий"</span>, Modifier.size(<span class="number">100</span>.dp))  <span class="comment">// Сверху (передний план)</span>
+}</pre>
+        </div>
+    </section>
+
+    <section class="stage" id="stage7">
+        <h2><span class="stage-number">7</span> Исправление типичных ошибок сборки</h2>
+
+        <h3>❌ Ошибка 1: accompanist-systemuicontroller:0.37.3 не найден</h3>
+        <div class="info-box danger">
+            <strong>Симптом:</strong>
+            <code>Could not find com.google.accompanist:accompanist-systemuicontroller:0.37.3</code>
+        </div>
+        <p><strong>Причина:</strong> Библиотека System UI Controller была помечена как <code>deprecated</code> и удалена в более новых версиях Accompanist. Последний релиз — <code>0.36.0</code>.</p>
+        <p><strong>Решение:</strong> Добавьте отдельную версию в <span class="file-path">libs.versions.toml</span>:</p>
+        <div class="code-block">
+            <div class="code-header">
+                <span>TOML</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre>[versions]
+accompanist = <span class="string">"0.37.3"</span>
+accompanistSystemUi = <span class="string">"0.36.0"</span>  <span class="comment"># ← отдельная версия</span>
+
+[libraries]
+accompanist-systemuicontroller = {
+    module = <span class="string">"com.google.accompanist:accompanist-systemuicontroller"</span>,
+    version.ref = <span class="string">"accompanistSystemUi"</span>  <span class="comment"># ← используем её здесь</span>
+}</pre>
+        </div>
+
+        <h3>❌ Ошибка 2: Опечатка в имени переменной</h3>
+        <div class="info-box warning">
+            <strong>Исходный код содержал опечатку:</strong>
+            <code>d rawerState.close()</code> — пробел в имени переменной.
+        </div>
+        <p><strong>Решение:</strong> Замените на корректное имя <code>drawerState.close()</code>.</p>
+
+        <h3>❌ Ошибка 3: Устаревший плагин Gradle Versions</h3>
+        <div class="info-box tip">
+            <strong>Предупреждение:</strong> <code>The com.github.ben-manes.versions plugin id is deprecated</code>
+        </div>
+        <p><strong>Решение:</strong> В <span class="file-path">libs.versions.toml</span> замените ID плагина:</p>
+        <div class="code-block">
+            <div class="code-header">
+                <span>TOML</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre><span class="comment"># Было:</span>
+<span class="comment"># gradle-versions = { id = "com.github.ben-manes.versions", ... }</span>
+
+<span class="comment"># Стало:</span>
+gradle-versions = { id = <span class="string">"io.github.ben-manes.versions"</span>, version.ref = <span class="string">"gradle-versions"</span> }</pre>
+        </div>
+
+        <h3>❌ Ошибка 4: Устаревшие свойства в gradle.properties</h3>
+        <p>AGP 9.0+ изменил значения по умолчанию для многих опций. Явное указание старых значений вызывает предупреждения. Удалите следующие строки или обновите их:</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Устаревшая опция</th>
+                    <th>Замена</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>android.builtInKotlin=false</code></td>
+                    <td><code>android.builtInKotlin=true</code></td>
+                </tr>
+                <tr>
+                    <td><code>android.newDsl=false</code></td>
+                    <td><code>android.newDsl=true</code></td>
+                </tr>
+                <tr>
+                    <td><code>android.defaults.buildfeatures.resvalues=true</code></td>
+                    <td><code>android.defaults.buildfeatures.resvalues=false</code></td>
+                </tr>
+                <tr>
+                    <td><code>android.usesSdkInManifest.disallowed=false</code></td>
+                    <td>Удалить</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="stage" id="stage8">
+        <h2><span class="stage-number">8</span> Запуск и отладка</h2>
+        <ol>
+            <li>В правом верхнем углу Android Studio появится уведомление <strong>"Gradle files have changed"</strong>. Нажмите <strong>Sync Now</strong>.</li>
+            <li>Дождитесь сообщения <strong>BUILD SUCCESSFUL</strong> в нижней панели.</li>
+            <li>Выполните <code>./gradlew clean</code> в терминале, чтобы очистить кэш.</li>
+            <li>Нажмите зелёную кнопку <strong>▶ Run</strong> или <code>Shift + F10</code>.</li>
+            <li>Выберите эмулятор или подключённое устройство.</li>
+        </ol>
+
+        <div class="info-box tip">
+            <strong>🎉 Ожидаемый результат</strong>
+            Вы увидите прокручиваемый экран с примерами использования <code>Row</code>, <code>Column</code>, <code>Box</code>, <code>Modifier</code> и <code>Spacer</code>. Каждый пример сопровождается текстовым описанием.
+        </div>
+
+        <h3>🐛 Полезные команды для отладки</h3>
+        <div class="code-block">
+            <div class="code-header">
+                <span>Terminal</span>
+                <button class="copy-btn" onclick="copyCode(this)">Копировать</button>
+            </div>
+<pre><span class="comment"># Детальный вывод Gradle</span>
+./gradlew assembleDebug --info
+
+<span class="comment"># Полная очистка кэша</span>
+./gradlew clean build --refresh-dependencies
+
+<span class="comment"># Проверка зависимостей конкретного модуля</span>
+./gradlew :Tutorial1-1Basics:dependencies
+
+<span class="comment"># Отладка устаревших API</span>
+./gradlew assembleDebug -Pandroid.debug.obsoleteApi=<span class="keyword">true</span></pre>
+        </div>
+    </section>
+
+</div>
+
+<footer class="footer">
+    <p>📘 Руководство разработчика • Jetpack Compose Tutorials</p>
+    <p>Актуально на 10 сентября 2026 г. • Android Gradle Plugin 8.5.2 • Kotlin 2.0.21</p>
+</footer>
+
+<script>
+    function toggleTheme() {
+        const html = document.documentElement;
+        const current = html.getAttribute('data-theme');
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    }
+
+    // Восстановление темы из localStorage
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+    }
+
+    function copyCode(btn) {
+        const codeBlock = btn.closest('.code-block');
+        const pre = codeBlock.querySelector('pre');
+        const text = pre.innerText;
+
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = '✓ Скопировано';
+            btn.classList.add('copied');
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.classList.remove('copied');
+            }, 2000);
+        }).catch(err => {
+            console.error('Ошибка копирования:', err);
+        });
+    }
+
+    // Плавная прокрутка для якорных ссылок
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
