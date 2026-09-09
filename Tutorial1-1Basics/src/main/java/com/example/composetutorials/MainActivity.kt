@@ -1,4 +1,4 @@
-package com.smarttoolfactory.tutorial1_1basics
+package com.example.composetutorials
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,8 +17,8 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Вызываем наш учебный экран с BottomDrawer
-                    Tutorial2_10Screen3()
+                    // ✅ Correct function name
+                    Tutorial1_1Screen()
                 }
             }
         }

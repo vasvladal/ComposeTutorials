@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.smarttoolfactory.tutorial1_1basics"
+    namespace = "com.example.composetutorials"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.smarttoolfactory.tutorial1_1basics"
+        applicationId = "com.example.composetutorials"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
@@ -88,4 +88,6 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.compose.ui.test)
     androidTestImplementation(libs.androidx.compose.ui.test.manifest)
+
+    implementation(libs.androidx.compose.material.iconsExtended)
 }
