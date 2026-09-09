@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пошаговое руководство: Compose Tutorials — Основы Layout</title>
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --secondary: #34a853;
+            --accent: #ea4335;
+            --warning: #fbbc04;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #202124;
+            --text-secondary: #5f6368;
+            --code-bg: #1e1e1e;
+            --code-text: #d4d4d4;
+            --border: #dadce0;
+            --step-number: #1a73e8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .badge {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            backdrop-filter: blur(4px);
+        }
+
+        .toc {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border-left: 4px solid var(--primary);
+        }
+
+        .toc h2 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .toc ol {
+            padding-left: 20px;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+        }
+
+        .toc a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .toc a:hover {
+            color: var(--primary);
+        }
+
+        .step {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .step-number {
+            background: var(--step-number);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .step h2 {
+            font-size: 1.5em;
+            color: var(--text);
+        }
+
+        .step h3 {
+            font-size: 1.2em;
+            margin: 20px 0 10px;
+            color: var(--primary-dark);
+        }
+
+        .step h4 {
+            font-size: 1.05em;
+            margin: 15px 0 8px;
+            color: var(--text-secondary);
+        }
+
+        p {
+            margin-bottom: 12px;
+        }
+
+        .code-block {
+            background: var(--code-bg);
+            color: var(--code-text);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.88em;
+            line-height: 1.6;
+            position: relative;
+        }
+
+        .code-block .filename {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+            background: rgba(255,255,255,0.1);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .code-block code {
+            white-space: pre;
+        }
+
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #dcdcaa; }
+        .function { color: #dcdcaa; }
+        .type { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .property { color: #9cdcfe; }
+
+        .note {
+            background: #e8f0fe;
+            border-left: 4px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .note::before {
+            content: "💡 ";
+        }
+
+        .warning {
+            background: #fef7e0;
+            border-left: 4px solid var(--warning);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .warning::before {
+            content: "⚠️ ";
+        }
+
+        .important {
+            background: #fce8e6;
+            border-left: 4px solid var(--accent);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .important::before {
+            content: "🔴 ";
+        }
+
+        .success {
+            background: #e6f4ea;
+            border-left: 4px solid var(--secondary);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0;
+        }
+
+        .success::before {
+            content: "✅ ";
+        }
+
+        .file-tree {
+            background: #f1f3f4;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+            margin: 15px 0;
+        }
+
+        .file-tree .folder {
+            color: #1a73e8;
+            font-weight: 600;
+        }
+
+        .file-tree .file {
+            color: #202124;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .screenshot-placeholder {
+            background: #e8eaed;
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            color: var(--text-secondary);
+            margin: 15px 0;
+        }
+
+        .inline-code {
+            background: #e8eaed;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        ul, ol {
+            margin: 10px 0 15px 25px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--border), transparent);
+            margin: 40px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.8em; }
+            .step { padding: 20px; }
+            .code-block { font-size: 0.8em; padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🚀 Compose Tutorials: Основы Layout</h1>
+    <p>Пошаговое руководство по созданию проекта с нуля в Android Studio с использованием Jetpack Compose</p>
+    <div class="tech-badges">
+        <span class="badge">Kotlin 2.4.20</span>
+        <span class="badge">AGP 9.4.0</span>
+        <span class="badge">Gradle 9.6.0</span>
+        <span class="badge">Compose BOM 2026.08.00</span>
+        <span class="badge">JDK 25</span>
+        <span class="badge">compileSdk 37</span>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+        <h2>📋 Содержание</h2>
+        <ol>
+            <li><a href="#step1">Установка и настройка окружения</a></li>
+            <li><a href="#step2">Создание нового проекта в Android Studio</a></li>
+            <li><a href="#step3">Настройка Gradle Wrapper и Daemon JVM</a></li>
+            <li><a href="#step4">Настройка settings.gradle.kts</a></li>
+            <li><a href="#step5">Создание Version Catalog (libs.versions.toml)</a></li>
+            <li><a href="#step6">Корневой build.gradle.kts</a></li>
+            <li><a href="#step7">Настройка gradle.properties</a></li>
+            <li><a href="#step8">Настройка модуля Tutorial1-1Basics (build.gradle.kts)</a></li>
+            <li><a href="#step9">Настройка AndroidManifest.xml</a></li>
+            <li><a href="#step10">Создание UI-компонентов (TutorialTexts.kt)</a></li>
+            <li><a href="#step11">Создание основного экрана (Tutorial1_1ColumnRowBoxScreen.kt)</a></li>
+            <li><a href="#step12">Настройка MainActivity.kt</a></li>
+            <li><a href="#step13">Синхронизация и запуск проекта</a></li>
+            <li><a href="#step14">Структура проекта и итоговая проверка</a></li>
+        </ol>
+    </div>
+
+    <!-- STEP 1 -->
+    <div class="step" id="step1">
+        <div class="step-header">
+            <div class="step-number">1</div>
+            <h2>Установка и настройка окружения</h2>
+        </div>
+
+        <h3>1.1. Установка Android Studio</h3>
+        <p>Скачайте и установите последнюю версию <strong>Android Studio</strong> (2025.1 или новее) с официального сайта:</p>
+        <p><a href="https://developer.android.com/studio" target="_blank">https://developer.android.com/studio</a></p>
+
+        <h3>1.2. Установка JDK 25</h3>
+        <p>Данный проект использует <strong>Java/Kotlin Toolchain версии 25</strong>. Убедитесь, что у вас установлен JDK 25:</p>
+        <ul>
+            <li>Перейдите в <span class="inline-code">File → Settings → Build, Execution, Deployment → Build Tools → Gradle</span></li>
+            <li>В поле <strong>Gradle JDK</strong> выберите JDK 25 (или позвольте Android Studio скачать его автоматически)</li>
+        </ul>
+
+        <div class="note">
+            Начиная с AGP 9.0+, Android Studio использует встроенную поддержку Kotlin и не требует отдельного плагина <span class="inline-code">kotlin-android</span>. Kotlin компилируется через Android Gradle Plugin напрямую.
+        </div>
+
+        <h3>1.3. Требования к окружению</h3>
+        <table>
+            <tr><th>Компонент</th><th>Версия</th><th>Примечание</th></tr>
+            <tr><td>Android Studio</td><td>2025.1+</td><td>С поддержкой AGP 9.x</td></tr>
+            <tr><td>JDK</td><td>25</td><td>Toolchain для сборки</td></tr>
+            <tr><td>Gradle</td><td>9.6.0</td><td>Устанавливается через Wrapper</td></tr>
+            <tr><td>Android SDK</td><td>API 37</td><td>compileSdk</td></tr>
+            <tr><td>Min SDK</td><td>API 24</td><td>Android 7.0+</td></tr>
+        </table>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step" id="step2">
+        <div class="step-header">
+            <div class="step-number">2</div>
+            <h2>Создание нового проекта в Android Studio</h2>
+        </div>
+
+        <h3>2.1. Создание проекта</h3>
+        <ol>
+            <li>Откройте Android Studio → <strong>File → New → New Project</strong></li>
+            <li>Выберите шаблон <strong>Empty Activity</strong> (Compose)</li>
+            <li>Нажмите <strong>Next</strong></li>
+        </ol>
+
+        <h3>2.2. Настройка проекта</h3>
+        <table>
+            <tr><th>Параметр</th><th>Значение</th></tr>
+            <tr><td>Name</td><td><span class="inline-code">ComposeTutorials</span></td></tr>
+            <tr><td>Package name</td><td><span class="inline-code">com.example.composetutorials</span></td></tr>
+            <tr><td>Save location</td><td>Любая удобная директория</td></tr>
+            <tr><td>Language</td><td>Kotlin</td></tr>
+            <tr><td>Minimum SDK</td><td>API 24</td></tr>
+            <tr><td>Build configuration language</td><td>Kotlin DSL (build.gradle.kts)</td></tr>
+        </table>
+
+        <p>Нажмите <strong>Finish</strong> и дождитесь завершения синхронизации.</p>
+
+        <h3>2.3. Создание модуля Tutorial1-1Basics</h3>
+        <p>После создания базового проекта необходимо создать отдельный модуль:</p>
+        <ol>
+            <li><strong>File → New → New Module</strong></li>
+            <li>Выберите <strong>Android Library</strong> или <strong>Phone & Tablet Module</strong></li>
+            <li>Module name: <span class="inline-code">Tutorial1-1Basics</span></li>
+            <li>Package name: <span class="inline-code">com.example.composetutorials</span></li>
+            <li>Minimum SDK: API 24</li>
+            <li>Language: Kotlin</li>
+        </ol>
+
+        <div class="note">
+            В данном проекте модуль <span class="inline-code">Tutorial1-1Basics</span> является основным и содержит всё приложение. Корневой проект служит для общей конфигурации.
+        </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step" id="step3">
+        <div class="step-header">
+            <div class="step-number">3</div>
+            <h2>Настройка Gradle Wrapper и Daemon JVM</h2>
+        </div>
+
+        <h3>3.1. gradle-wrapper.properties</h3>
+        <p>Откройте файл <span class="inline-code">gradle/wrapper/gradle-wrapper.properties</span> и замените содержимое:</p>
+
+        <div class="code-block">
+            <span class="filename">gradle/wrapper/gradle-wrapper.properties</span>
+<code><span class="comment">#Wed Sep 09 20:06:58 MSK 2026</span>
+<span class="property">distributionBase</span>=GRADLE_USER_HOME
+<span class="property">distributionPath</span>=wrapper/dists
+<span class="property">distributionSha256Sum</span>=bbaeb2fef8710818cf0e261201dab964c572f92b942812df0c3620d62a529a01
+<span class="property">distributionUrl</span>=https\://services.gradle.org/distributions/gradle-9.6.0-bin.zip
+<span class="property">networkTimeout</span>=10000
+<span class="property">validateDistributionUrl</span>=true
+<span class="property">zipStoreBase</span>=GRADLE_USER_HOME
+<span class="property">zipStorePath</span>=wrapper/dists</code>
+        </div>
+
+        <h3>3.2. gradle-daemon-jvm.properties</h3>
+        <p>Создайте файл <span class="inline-code">gradle/gradle-daemon-jvm.properties</span> для автоматической загрузки нужного JDK:</p>
+
+        <div class="code-block">
+            <span class="filename">gradle/gradle-daemon-jvm.properties</span>
+<code><span class="comment">#This file is generated by updateDaemonJvm</span>
+<span class="property">toolchainUrl.FREE_BSD.AARCH64</span>=https\://api.foojay.io/disco/v3.0/ids/cf726b4a1c84b50457225f9bba6d7650/redirect
+<span class="property">toolchainUrl.FREE_BSD.X86_64</span>=https\://api.foojay.io/disco/v3.0/ids/fa1e318c287360478e3c83a9a3ef1007/redirect
+<span class="property">toolchainUrl.LINUX.AARCH64</span>=https\://api.foojay.io/disco/v3.0/ids/cf726b4a1c84b50457225f9bba6d7650/redirect
+<span class="property">toolchainUrl.LINUX.X86_64</span>=https\://api.foojay.io/disco/v3.0/ids/fa1e318c287360478e3c83a9a3ef1007/redirect
+<span class="property">toolchainUrl.MAC_OS.AARCH64</span>=https\://api.foojay.io/disco/v3.0/ids/c2dd35c9d0aaf0ba6ad0791320f99dfc/redirect
+<span class="property">toolchainUrl.MAC_OS.X86_64</span>=https\://api.foojay.io/disco/v3.0/ids/e5810bd7fd1f8a586644409d395a7e55/redirect
+<span class="property">toolchainUrl.UNIX.AARCH64</span>=https\://api.foojay.io/disco/v3.0/ids/cf726b4a1c84b50457225f9bba6d7650/redirect
+<span class="property">toolchainUrl.UNIX.X86_64</span>=https\://api.foojay.io/disco/v3.0/ids/fa1e318c287360478e3c83a9a3ef1007/redirect
+<span class="property">toolchainUrl.WINDOWS.AARCH64</span>=https\://api.foojay.io/disco/v3.0/ids/7b3c4877c0749019e6805bb61e421497/redirect
+<span class="property">toolchainUrl.WINDOWS.X86_64</span>=https\://api.foojay.io/disco/v3.0/ids/d76df094a9cbbabd3b08251f9e61444a/redirect
+<span class="property">toolchainVersion</span>=25</code>
+        </div>
+
+        <div class="note">
+            Файл <span class="inline-code">gradle-daemon-jvm.properties</span> позволяет Gradle автоматически скачать и использовать нужный JDK (версия 25) через Foojay API, без ручной установки.
+        </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step" id="step4">
+        <div class="step-header">
+            <div class="step-number">4</div>
+            <h2>Настройка settings.gradle.kts</h2>
+        </div>
+
+        <p>Откройте <span class="inline-code">settings.gradle.kts</span> в корне проекта и замените содержимое:</p>
+
+        <div class="code-block">
+            <span class="filename">settings.gradle.kts</span>
+<code><span class="function">pluginManagement</span> {
+    <span class="function">repositories</span> {
+        <span class="function">gradlePluginPortal</span>()
+        <span class="function">google</span>()
+        <span class="function">mavenCentral</span>()
+    }
+}
+
+<span class="function">plugins</span> {
+    <span class="function">id</span>(<span class="string">"org.gradle.toolchains.foojay-resolver-convention"</span>) <span class="function">version</span> <span class="string">"1.0.0"</span>
+}
+
+<span class="function">dependencyResolutionManagement</span> {
+    <span class="function">repositoriesMode</span>.<span class="function">set</span>(RepositoriesMode.<span class="property">FAIL_ON_PROJECT_REPOS</span>)
+    <span class="function">repositories</span> {
+        <span class="function">google</span>()
+        <span class="function">mavenCentral</span>()
+        <span class="function">maven</span> { <span class="property">url</span> = <span class="function">uri</span>(<span class="string">"https://jitpack.io"</span>) }
+    }
+}
+
+<span class="property">rootProject</span>.<span class="property">name</span> = <span class="string">"ComposeTutorials"</span>
+<span class="function">include</span>(<span class="string">":Tutorial1-1Basics"</span>)</code>
+        </div>
+
+        <h3>Пояснения:</h3>
+        <ul>
+            <li><span class="inline-code">pluginManagement</span> — определяет, откуда загружать Gradle-плагины</li>
+            <li><span class="inline-code">foojay-resolver-convention</span> — плагин для автоматического скачивания JDK по toolchain URL</li>
+            <li><span class="inline-code">dependencyResolutionManagement</span> — централизованное управление репозиториями зависимостей</li>
+            <li><span class="inline-code">FAIL_ON_PROJECT_REPOS</span> — запрещает модулям объявлять собственные репозитории</li>
+            <li><span class="inline-code">include(":Tutorial1-1Basics")</span> — подключает наш модуль к сборке</li>
+        </ul>
+    </div>
+
+    <!-- STEP 5 -->
+    <div class="step" id="step5">
+        <div class="step-header">
+            <div class="step-number">5</div>
+            <h2>Создание Version Catalog (libs.versions.toml)</h2>
+        </div>
+
+        <p>Создайте файл <span class="inline-code">gradle/libs.versions.toml</span>. Это центральный каталог всех версий зависимостей проекта:</p>
+
+        <div class="code-block">
+            <span class="filename">gradle/libs.versions.toml</span>
+<code>[versions]
+<span class="comment"># Android</span>
+<span class="property">androidGradlePlugin</span> = <span class="string">"9.4.0"</span>
+<span class="property">compileSdk</span> = <span class="string">"37"</span>
+<span class="property">minSdk</span> = <span class="string">"24"</span>
+<span class="property">targetSdk</span> = <span class="string">"35"</span>
+
+<span class="comment"># Kotlin & Coroutines</span>
+<span class="property">kotlin</span> = <span class="string">"2.4.20"</span>
+<span class="property">coroutines</span> = <span class="string">"1.11.0"</span>
+
+<span class="comment"># AndroidX Core</span>
+<span class="property">androidx-corektx</span> = <span class="string">"1.19.0"</span>
+<span class="property">androidx-appcompat</span> = <span class="string">"1.8.0"</span>
+<span class="property">androidx-activity-compose</span> = <span class="string">"1.13.0"</span>
+
+<span class="comment"># Compose</span>
+<span class="property">androidx-compose-bom</span> = <span class="string">"2026.08.00"</span>
+<span class="property">androidx-lifecycle-compose</span> = <span class="string">"2.11.0"</span>
+<span class="property">androidx-navigation</span> = <span class="string">"2.10.0"</span>
+
+<span class="comment"># Accompanist</span>
+<span class="property">accompanist</span> = <span class="string">"0.37.3"</span>
+<span class="property">accompanistSystemUi</span> = <span class="string">"0.36.0"</span>
+<span class="property">accompanistCoil</span> = <span class="string">"0.6.2"</span>
+
+<span class="comment"># Testing</span>
+<span class="property">junit</span> = <span class="string">"4.13.2"</span>
+<span class="property">androidx-test</span> = <span class="string">"1.7.0"</span>
+<span class="property">androidx-test-ext-junit</span> = <span class="string">"1.3.0"</span>
+<span class="property">androidx-test-espresso</span> = <span class="string">"3.7.0"</span>
+<span class="property">kotlinx-coroutines-test</span> = <span class="string">"1.11.0"</span>
+
+[libraries]
+<span class="comment"># Core</span>
+<span class="property">kotlin-stdlib</span> = { <span class="property">module</span> = <span class="string">"org.jetbrains.kotlin:kotlin-stdlib"</span>, <span class="property">version.ref</span> = <span class="string">"kotlin"</span> }
+<span class="property">kotlinx-coroutines-android</span> = { <span class="property">module</span> = <span class="string">"org.jetbrains.kotlinx:kotlinx-coroutines-android"</span>, <span class="property">version.ref</span> = <span class="string">"coroutines"</span> }
+<span class="property">androidx-core-ktx</span> = { <span class="property">module</span> = <span class="string">"androidx.core:core-ktx"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-corektx"</span> }
+<span class="property">androidx-appcompat</span> = { <span class="property">module</span> = <span class="string">"androidx.appcompat:appcompat"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-appcompat"</span> }
+<span class="property">androidx-activity-compose</span> = { <span class="property">module</span> = <span class="string">"androidx.activity:activity-compose"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-activity-compose"</span> }
+
+<span class="comment"># Compose BOM и основные библиотеки</span>
+<span class="property">androidx-compose-bom</span> = { <span class="property">module</span> = <span class="string">"androidx.compose:compose-bom"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-compose-bom"</span> }
+<span class="property">androidx-compose-runtime</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.runtime:runtime"</span> }
+<span class="property">androidx-compose-foundation</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.foundation:foundation"</span> }
+<span class="property">androidx-compose-foundation-layout</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.foundation:foundation-layout"</span> }
+<span class="property">androidx-compose-ui</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.ui:ui"</span> }
+<span class="property">androidx-compose-ui-tooling</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.ui:ui-tooling"</span> }
+<span class="property">androidx-compose-ui-tooling-preview</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.ui:ui-tooling-preview"</span> }
+<span class="property">androidx-compose-material</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.material:material"</span> }
+<span class="property">androidx-compose-material3</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.material3:material3"</span> }
+
+<span class="comment"># Lifecycle & Navigation</span>
+<span class="property">androidx-lifecycle-viewModelCompose</span> = { <span class="property">module</span> = <span class="string">"androidx.lifecycle:lifecycle-viewmodel-compose"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-lifecycle-compose"</span> }
+<span class="property">androidx-lifecycle-runtime-compose</span> = { <span class="property">module</span> = <span class="string">"androidx.lifecycle:lifecycle-runtime-compose"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-lifecycle-compose"</span> }
+<span class="property">androidx-navigation-compose</span> = { <span class="property">module</span> = <span class="string">"androidx.navigation:navigation-compose"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-navigation"</span> }
+
+<span class="comment"># Accompanist</span>
+<span class="property">accompanist-systemuicontroller</span> = { <span class="property">module</span> = <span class="string">"com.google.accompanist:accompanist-systemuicontroller"</span>, <span class="property">version.ref</span> = <span class="string">"accompanistSystemUi"</span> }
+<span class="property">accompanist-drawablepainter</span> = { <span class="property">module</span> = <span class="string">"com.google.accompanist:accompanist-drawablepainter"</span>, <span class="property">version.ref</span> = <span class="string">"accompanist"</span> }
+<span class="property">accompanist-coil</span> = { <span class="property">module</span> = <span class="string">"dev.chrisbanes.accompanist:accompanist-coil"</span>, <span class="property">version.ref</span> = <span class="string">"accompanistCoil"</span> }
+
+<span class="comment"># Testing</span>
+<span class="property">junit</span> = { <span class="property">module</span> = <span class="string">"junit:junit"</span>, <span class="property">version.ref</span> = <span class="string">"junit"</span> }
+<span class="property">androidx-test-core</span> = { <span class="property">module</span> = <span class="string">"androidx.test:core"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-test"</span> }
+<span class="property">androidx-test-runner</span> = { <span class="property">module</span> = <span class="string">"androidx.test:runner"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-test"</span> }
+<span class="property">androidx-test-espresso-core</span> = { <span class="property">module</span> = <span class="string">"androidx.test.espresso:espresso-core"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-test-espresso"</span> }
+<span class="property">androidx-test-ext-junit</span> = { <span class="property">module</span> = <span class="string">"androidx.test.ext:junit"</span>, <span class="property">version.ref</span> = <span class="string">"androidx-test-ext-junit"</span> }
+<span class="property">kotlinx-coroutines-test</span> = { <span class="property">module</span> = <span class="string">"org.jetbrains.kotlinx:kotlinx-coroutines-test"</span>, <span class="property">version.ref</span> = <span class="string">"kotlinx-coroutines-test"</span> }
+<span class="property">androidx-compose-ui-test</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.ui:ui-test-junit4"</span> }
+<span class="property">androidx-compose-ui-test-manifest</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.ui:ui-test-manifest"</span> }
+<span class="property">androidx-compose-material-iconsExtended</span> = { <span class="property">module</span> = <span class="string">"androidx.compose.material:material-icons-extended"</span> }
+
+[plugins]
+<span class="property">android-application</span> = { <span class="property">id</span> = <span class="string">"com.android.application"</span>, <span class="property">version.ref</span> = <span class="string">"androidGradlePlugin"</span> }
+<span class="property">compose</span> = { <span class="property">id</span> = <span class="string">"org.jetbrains.kotlin.plugin.compose"</span>, <span class="property">version.ref</span> = <span class="string">"kotlin"</span> }
+<span class="property">kotlin-parcelize</span> = { <span class="property">id</span> = <span class="string">"org.jetbrains.kotlin.plugin.parcelize"</span>, <span class="property">version.ref</span> = <span class="string">"kotlin"</span> }</code>
+        </div>
+
+        <div class="warning">
+            Обратите внимание: версии библиотек Compose (runtime, ui, foundation, material) не указываются явно — они управляются через BOM (Bill of Materials). Это гарантирует совместимость всех Compose-библиотек между собой.
+        </div>
+    </div>
+
+    <!-- STEP 6 -->
+    <div class="step" id="step6">
+        <div class="step-header">
+            <div class="step-number">6</div>
+            <h2>Корневой build.gradle.kts</h2>
+        </div>
+
+        <p>Замените содержимое корневого <span class="inline-code">build.gradle.kts</span>:</p>
+
+        <div class="code-block">
+            <span class="filename">build.gradle.kts (корневой)</span>
+<code><span class="comment">// Корневой build.gradle.kts</span>
+<span class="function">plugins</span> {
+    <span class="function">alias</span>(libs.plugins.android.application) <span class="function">apply</span> <span class="keyword">false</span>
+    <span class="function">alias</span>(libs.plugins.kotlin.parcelize) <span class="function">apply</span> <span class="keyword">false</span>
+    <span class="function">alias</span>(libs.plugins.compose) <span class="function">apply</span> <span class="keyword">false</span>
+}</code>
+        </div>
+
+        <h3>Пояснения:</h3>
+        <ul>
+            <li><span class="inline-code">apply false</span> — плагины объявляются, но не применяются к корневому проекту. Они будут применены в модулях.</li>
+            <li><span class="inline-code">alias(libs.plugins...)</span> — типобезопасный доступ к плагинам из Version Catalog.</li>
+        </ul>
+
+        <div class="important">
+            В AGP 9.0+ <strong>НЕ нужен</strong> плагин <span class="inline-code">kotlin-android</span>. Kotlin поддерживается встроенно через AGP.
+        </div>
+    </div>
+
+    <!-- STEP 7 -->
+    <div class="step" id="step7">
+        <div class="step-header">
+            <div class="step-number">7</div>
+            <h2>Настройка gradle.properties</h2>
+        </div>
+
+        <p>Откройте <span class="inline-code">gradle.properties</span> в корне проекта:</p>
+
+        <div class="code-block">
+            <span class="filename">gradle.properties</span>
+<code><span class="property">org.gradle.jvmargs</span>=-Xmx2048m -Dfile.encoding=UTF-8
+<span class="property">android.useAndroidX</span>=true
+<span class="property">kotlin.code.style</span>=official
+
+<span class="comment"># Современные настройки AGP (Android Gradle Plugin)</span>
+<span class="property">android.nonTransitiveRClass</span>=true
+<span class="property">android.nonFinalResIds</span>=true
+<span class="property">android.defaults.buildfeatures.resvalues</span>=false
+<span class="property">android.enableAppCompileTimeRClass</span>=true
+<span class="property">android.r8.optimizedResourceShrinking</span>=true
+<span class="property">android.builtInKotlin</span>=true
+<span class="property">android.newDsl</span>=true
+
+<span class="comment"># Улучшение производительности для больших проектов</span>
+<span class="property">android.dependency.excludeLibraryComponentsFromConstraints</span>=true</code>
+        </div>
+
+        <h3>Ключевые параметры:</h3>
+        <table>
+            <tr><th>Параметр</th><th>Назначение</th></tr>
+            <tr><td><span class="inline-code">android.builtInKotlin=true</span></td><td>Включает встроенную поддержку Kotlin в AGP 9+</td></tr>
+            <tr><td><span class="inline-code">android.newDsl=true</span></td><td>Новый DSL для build-скриптов</td></tr>
+            <tr><td><span class="inline-code">android.nonTransitiveRClass</span></td><td>R-классы не наследуют ресурсы других модулей</td></tr>
+            <tr><td><span class="inline-code">android.nonFinalResIds</span></td><td>R.id поля не final (для оптимизации)</td></tr>
+            <tr><td><span class="inline-code">android.enableAppCompileTimeRClass</span></td><td>Компиляция R-класса только для приложения</td></tr>
+        </table>
+    </div>
+
+    <!-- STEP 8 -->
+    <div class="step" id="step8">
+        <div class="step-header">
+            <div class="step-number">8</div>
+            <h2>Настройка модуля Tutorial1-1Basics (build.gradle.kts)</h2>
+        </div>
+
+        <p>Откройте <span class="inline-code">Tutorial1-1Basics/build.gradle.kts</span> и замените содержимое:</p>
+
+        <div class="code-block">
+            <span class="filename">Tutorial1-1Basics/build.gradle.kts</span>
+<code><span class="keyword">import</span> org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
+<span class="function">plugins</span> {
+    <span class="function">alias</span>(libs.plugins.android.application)
+    <span class="comment">// Убрано: alias(libs.plugins.kotlin.android) - не нужно в AGP 9.0+</span>
+    <span class="function">alias</span>(libs.plugins.compose)
+}
+
+<span class="function">android</span> {
+    <span class="property">namespace</span> = <span class="string">"com.example.composetutorials"</span>
+    <span class="property">compileSdk</span> = libs.versions.compileSdk.<span class="function">get</span>().<span class="function">toInt</span>()
+
+    <span class="function">defaultConfig</span> {
+        <span class="property">applicationId</span> = <span class="string">"com.example.composetutorials"</span>
+        <span class="property">minSdk</span> = libs.versions.minSdk.<span class="function">get</span>().<span class="function">toInt</span>()
+        <span class="property">targetSdk</span> = libs.versions.targetSdk.<span class="function">get</span>().<span class="function">toInt</span>()
+        <span class="property">versionCode</span> = <span class="number">1</span>
+        <span class="property">versionName</span> = <span class="string">"1.0"</span>
+        <span class="property">testInstrumentationRunner</span> = <span class="string">"androidx.test.runner.AndroidJUnitRunner"</span>
+    }
+
+    <span class="function">buildTypes</span> {
+        <span class="function">release</span> {
+            <span class="property">isMinifyEnabled</span> = <span class="keyword">true</span>
+            <span class="property">isShrinkResources</span> = <span class="keyword">true</span>
+            <span class="function">proguardFiles</span>(
+                <span class="function">getDefaultProguardFile</span>(<span class="string">"proguard-android-optimize.txt"</span>),
+                <span class="string">"proguard-rules.pro"</span>
+            )
+        }
+    }
+
+    <span class="function">compileOptions</span> {
+        <span class="property">sourceCompatibility</span> = JavaVersion.<span class="property">VERSION_21</span>
+        <span class="property">targetCompatibility</span> = JavaVersion.<span class="property">VERSION_21</span>
+    }
+
+    <span class="function">buildFeatures</span> {
+        <span class="property">compose</span> = <span class="keyword">true</span>
+    }
+}
+
+<span class="function">dependencies</span> {
+    <span class="comment">// Используем BOM для управления версиями Compose</span>
+    <span class="function">implementation</span>(<span class="function">platform</span>(libs.androidx.compose.bom))
+    <span class="function">androidTestImplementation</span>(<span class="function">platform</span>(libs.androidx.compose.bom))
+
+    <span class="comment">// Основные зависимости</span>
+    <span class="function">implementation</span>(libs.kotlin.stdlib)
+    <span class="function">implementation</span>(libs.kotlinx.coroutines.android)
+    <span class="function">implementation</span>(libs.androidx.core.ktx)
+    <span class="function">implementation</span>(libs.androidx.appcompat)
+    <span class="function">implementation</span>(libs.androidx.activity.compose)
+
+    <span class="comment">// Compose</span>
+    <span class="function">implementation</span>(libs.androidx.compose.runtime)
+    <span class="function">implementation</span>(libs.androidx.compose.foundation)
+    <span class="function">implementation</span>(libs.androidx.compose.foundation.layout)
+    <span class="function">implementation</span>(libs.androidx.compose.ui)
+    <span class="function">implementation</span>(libs.androidx.compose.ui.tooling.preview)
+    <span class="function">implementation</span>(libs.androidx.compose.material)
+    <span class="function">implementation</span>(libs.androidx.compose.material3)
+    <span class="function">debugImplementation</span>(libs.androidx.compose.ui.tooling)
+
+    <span class="comment">// Lifecycle & Navigation</span>
+    <span class="function">implementation</span>(libs.androidx.lifecycle.viewModelCompose)
+    <span class="function">implementation</span>(libs.androidx.lifecycle.runtime.compose)
+    <span class="function">implementation</span>(libs.androidx.navigation.compose)
+
+    <span class="comment">// Accompanist</span>
+    <span class="function">implementation</span>(libs.accompanist.systemuicontroller)
+    <span class="function">implementation</span>(libs.accompanist.drawablepainter)
+    <span class="function">implementation</span>(libs.accompanist.coil)
+
+    <span class="comment">// Тестирование</span>
+    <span class="function">testImplementation</span>(libs.junit)
+    <span class="function">androidTestImplementation</span>(libs.androidx.test.core)
+    <span class="function">androidTestImplementation</span>(libs.androidx.test.runner)
+    <span class="function">androidTestImplementation</span>(libs.androidx.test.espresso.core)
+    <span class="function">androidTestImplementation</span>(libs.androidx.test.ext.junit)
+    <span class="function">androidTestImplementation</span>(libs.kotlinx.coroutines.test)
+    <span class="function">androidTestImplementation</span>(libs.androidx.compose.ui.test)
+    <span class="function">androidTestImplementation</span>(libs.androidx.compose.ui.test.manifest)
+    <span class="function">implementation</span>(libs.androidx.compose.material.iconsExtended)
+}</code>
+        </div>
+
+        <div class="note">
+            Плагин <span class="inline-code">org.jetbrains.kotlin.plugin.compose</span> заменяет старую настройку <span class="inline-code">composeOptions { kotlinCompilerExtensionVersion = "..." }</span>. Начиная с Kotlin 2.0+, Compose Compiler встроен в Kotlin.
+        </div>
+    </div>
+
+    <!-- STEP 9 -->
+    <div class="step" id="step9">
+        <div class="step-header">
+            <div class="step-number">9</div>
+            <h2>Настройка AndroidManifest.xml</h2>
+        </div>
+
+        <p>Откройте <span class="inline-code">Tutorial1-1Basics/src/main/AndroidManifest.xml</span>:</p>
+
+        <div class="code-block">
+            <span class="filename">Tutorial1-1Basics/src/main/AndroidManifest.xml</span>
+<code>&lt;?<span class="keyword">xml</span> version=<span class="string">"1.0"</span> encoding=<span class="string">"utf-8"</span>?&gt;
+&lt;<span class="type">manifest</span> xmlns:android=<span class="string">"http://schemas.android.com/apk/res/android"</span>&gt;
+
+    &lt;<span class="type">uses-permission</span> android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;
+
+    &lt;<span class="type">application</span>
+        android:allowBackup=<span class="string">"true"</span>
+        android:icon=<span class="string">"@mipmap/ic_launcher"</span>
+        android:label=<span class="string">"@string/app_name"</span>
+        android:roundIcon=<span class="string">"@mipmap/ic_launcher_round"</span>
+        android:supportsRtl=<span class="string">"true"</span>
+        android:theme=<span class="string">"@android:style/Theme.Material.Light.NoActionBar"</span>&gt;
+
+        &lt;<span class="type">activity</span>
+            android:name=<span class="string">".MainActivity"</span>
+            android:exported=<span class="string">"true"</span>
+            android:windowSoftInputMode=<span class="string">"adjustResize"</span>
+            android:label=<span class="string">"@string/app_name"</span>
+            android:theme=<span class="string">"@android:style/Theme.Material.Light.NoActionBar"</span>&gt;
+            &lt;<span class="type">intent-filter</span>&gt;
+                &lt;<span class="type">action</span> android:name=<span class="string">"android.intent.action.MAIN"</span> /&gt;
+                &lt;<span class="type">category</span> android:name=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;
+            &lt;/<span class="type">intent-filter</span>&gt;
+        &lt;/<span class="type">activity</span>&gt;
+    &lt;/<span class="type">application</span>&gt;
+&lt;/<span class="type">manifest</span>&gt;</code>
+        </div>
+
+        <div class="note">
+            Тема <span class="inline-code">Theme.Material.Light.NoActionBar</span> используется потому, что Compose полностью управляет UI, и системный ActionBar не нужен.
+        </div>
+    </div>
+
+    <!-- STEP 10 -->
+    <div class="step" id="step10">
+        <div class="step-header">
+            <div class="step-number">10</div>
+            <h2>Создание UI-компонентов (TutorialTexts.kt)</h2>
+        </div>
+
+        <p>Создайте структуру папок: <span class="inline-code">Tutorial1-1Basics/src/main/java/com/example/composetutorials/ui/components/</span></p>
+        <p>Создайте файл <span class="inline-code">TutorialTexts.kt</span>:</p>
+
+        <div class="code-block">
+            <span class="filename">ui/components/TutorialTexts.kt</span>
+<code><span class="keyword">package</span> com.example.composetutorials.ui.components
+
+<span class="keyword">import</span> android.content.res.Configuration
+<span class="keyword">import</span> androidx.compose.foundation.layout.fillMaxWidth
+<span class="keyword">import</span> androidx.compose.foundation.layout.padding
+<span class="keyword">import</span> androidx.compose.material.ContentAlpha
+<span class="keyword">import</span> androidx.compose.material.LocalContentAlpha
+<span class="keyword">import</span> androidx.compose.material.MaterialTheme
+<span class="keyword">import</span> androidx.compose.material.Text
+<span class="keyword">import</span> androidx.compose.runtime.Composable
+<span class="keyword">import</span> androidx.compose.runtime.CompositionLocalProvider
+<span class="keyword">import</span> androidx.compose.ui.Modifier
+<span class="keyword">import</span> androidx.compose.ui.graphics.Color
+<span class="keyword">import</span> androidx.compose.ui.text.SpanStyle
+<span class="keyword">import</span> androidx.compose.ui.text.buildAnnotatedString
+<span class="keyword">import</span> androidx.compose.ui.text.font.FontWeight
+<span class="keyword">import</span> androidx.compose.ui.tooling.preview.Devices
+<span class="keyword">import</span> androidx.compose.ui.tooling.preview.Preview
+<span class="keyword">import</span> androidx.compose.ui.unit.dp
+<span class="keyword">import</span> androidx.compose.ui.unit.sp
+
+<span class="keyword">val</span> boldRegex = <span class="type">Regex</span>(<span class="string">"(?&lt;!\\*)\\*\\*(?&lt;![*]).*?(?&lt;!\\*)\\*\\*(?!\\*)"</span>)
+
+<span class="comment">/**
+ * Заголовок туториала
+ */</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">TutorialHeader</span>(text: <span class="type">String</span>, modifier: <span class="type">Modifier</span> = <span class="type">Modifier</span>) {
+    <span class="function">Text</span>(
+        modifier = modifier
+            .<span class="function">fillMaxWidth</span>()
+            .<span class="function">padding</span>(start = <span class="number">8</span>.dp, end = <span class="number">8</span>.dp, top = <span class="number">12</span>.dp, bottom = <span class="number">6</span>.dp),
+        fontWeight = <span class="type">FontWeight</span>.<span class="property">Bold</span>,
+        fontSize = <span class="number">22</span>.sp,
+        text = text
+    )
+}
+
+<span class="comment">/**
+ * Текст с поддержкой Markdown-подобного форматирования.
+ * Парсит **жирный текст** и выделяет его.
+ */</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">StyleableTutorialText</span>(
+    text: <span class="type">String</span>,
+    modifier: <span class="type">Modifier</span> = <span class="type">Modifier</span>,
+    bullets: <span class="type">Boolean</span> = <span class="keyword">true</span>
+) {
+    <span class="keyword">var</span> results: <span class="type">MatchResult</span>? = boldRegex.<span class="function">find</span>(text)
+    <span class="keyword">val</span> boldIndexes = <span class="function">mutableListOf</span>&lt;<span class="type">Pair</span>&lt;<span class="type">Int</span>, <span class="type">Int</span>&gt;&gt;()
+    <span class="keyword">val</span> keywords = <span class="function">mutableListOf</span>&lt;<span class="type">String</span>&gt;()
+    <span class="keyword">var</span> finalText = text
+
+    <span class="keyword">while</span> (results != <span class="keyword">null</span>) {
+        keywords.<span class="function">add</span>(results.value)
+        results = results.<span class="function">next</span>()
+    }
+
+    keywords.<span class="function">forEach</span> { keyword -&gt;
+        <span class="keyword">val</span> newKeyWord = keyword.<span class="function">removeSurrounding</span>(<span class="string">"**"</span>)
+        finalText = finalText.<span class="function">replace</span>(keyword, newKeyWord)
+        <span class="keyword">val</span> indexOf = finalText.<span class="function">indexOf</span>(newKeyWord)
+        boldIndexes.<span class="function">add</span>(<span class="type">Pair</span>(indexOf, indexOf + newKeyWord.length))
+    }
+
+    <span class="keyword">val</span> annotatedString = <span class="function">buildAnnotatedString</span> {
+        <span class="function">append</span>(finalText)
+
+        <span class="keyword">if</span> (bullets) {
+            <span class="function">addStyle</span>(
+                style = <span class="type">SpanStyle</span>(fontWeight = <span class="type">FontWeight</span>.<span class="property">Bold</span>),
+                start = <span class="number">0</span>,
+                end = <span class="number">3</span>
+            )
+        }
+
+        <span class="comment">// Добавляем жирный стиль к ключевым словам</span>
+        boldIndexes.<span class="function">forEach</span> {
+            <span class="function">addStyle</span>(
+                style = <span class="type">SpanStyle</span>(
+                    fontWeight = <span class="type">FontWeight</span>.<span class="property">Bold</span>,
+                    color = <span class="type">Color</span>(<span class="number">0xff64B5F6</span>),
+                    fontSize = <span class="number">15</span>.sp
+                ),
+                start = it.first,
+                end = it.second
+            )
+        }
+    }
+
+    <span class="function">Text</span>(
+        modifier = modifier
+            .<span class="function">fillMaxWidth</span>()
+            .<span class="function">padding</span>(start = <span class="number">8</span>.dp, end = <span class="number">8</span>.dp, top = <span class="number">12</span>.dp, bottom = <span class="number">12</span>.dp),
+        fontSize = <span class="number">16</span>.sp,
+        text = annotatedString
+    )
+}
+
+<span class="comment">/**
+ * Вторичный текст с уменьшенной прозрачностью
+ */</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">TutorialText2</span>(text: <span class="type">String</span>, modifier: <span class="type">Modifier</span> = <span class="type">Modifier</span>) {
+    <span class="function">CompositionLocalProvider</span>(<span class="type">LocalContentAlpha</span> provides <span class="type">ContentAlpha</span>.<span class="property">medium</span>) {
+        <span class="function">Text</span>(
+            text = text,
+            style = <span class="type">MaterialTheme</span>.typography.body2,
+            color = <span class="type">Color</span>.<span class="property">Gray</span>,
+            modifier = modifier
+                .<span class="function">fillMaxWidth</span>()
+                .<span class="function">padding</span>(start = <span class="number">8</span>.dp, end = <span class="number">8</span>.dp, top = <span class="number">8</span>.dp, bottom = <span class="number">8</span>.dp)
+        )
+    }
+}
+
+<span class="annotation">@Preview</span>
+<span class="annotation">@Preview</span>(<span class="string">"dark"</span>, uiMode = <span class="type">Configuration</span>.<span class="property">UI_MODE_NIGHT_YES</span>)
+<span class="annotation">@Preview</span>(device = <span class="type">Devices</span>.<span class="property">PIXEL_C</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">private fun</span> <span class="function">TutorialTextPreview</span>() {
+    <span class="function">StyleableTutorialText</span>(<span class="string">"Sample text for demonstrating this text"</span>)
+}</code>
+        </div>
+
+        <h3>Что делают компоненты:</h3>
+        <table>
+            <tr><th>Компонент</th><th>Назначение</th></tr>
+            <tr><td><span class="inline-code">TutorialHeader</span></td><td>Заголовок секции (22sp, Bold)</td></tr>
+            <tr><td><span class="inline-code">StyleableTutorialText</span></td><td>Текст с парсингом **маркдаун** для жирного выделения</td></tr>
+            <tr><td><span class="inline-code">TutorialText2</span></td><td>Подзаголовок с серым цветом и средней прозрачностью</td></tr>
+        </table>
+    </div>
+
+    <!-- STEP 11 -->
+    <div class="step" id="step11">
+        <div class="step-header">
+            <div class="step-number">11</div>
+            <h2>Создание основного экрана (Tutorial1_1ColumnRowBoxScreen.kt)</h2>
+        </div>
+
+        <p>Создайте файл <span class="inline-code">Tutorial1-1Basics/src/main/java/com/example/composetutorials/Tutorial1_1ColumnRowBoxScreen.kt</span>:</p>
+
+        <div class="code-block">
+            <span class="filename">Tutorial1_1ColumnRowBoxScreen.kt</span>
+<code><span class="keyword">package</span> com.example.composetutorials
+
+<span class="keyword">import</span> android.content.res.Configuration
+<span class="keyword">import</span> androidx.compose.foundation.background
+<span class="keyword">import</span> androidx.compose.foundation.layout.Arrangement
+<span class="keyword">import</span> androidx.compose.foundation.layout.Box
+<span class="keyword">import</span> androidx.compose.foundation.layout.Column
+<span class="keyword">import</span> androidx.compose.foundation.layout.Row
+<span class="keyword">import</span> androidx.compose.foundation.layout.Spacer
+<span class="keyword">import</span> androidx.compose.foundation.layout.fillMaxHeight
+<span class="keyword">import</span> androidx.compose.foundation.layout.fillMaxSize
+<span class="keyword">import</span> androidx.compose.foundation.layout.fillMaxWidth
+<span class="keyword">import</span> androidx.compose.foundation.layout.height
+<span class="keyword">import</span> androidx.compose.foundation.layout.padding
+<span class="keyword">import</span> androidx.compose.foundation.layout.size
+<span class="keyword">import</span> androidx.compose.foundation.layout.wrapContentHeight
+<span class="keyword">import</span> androidx.compose.foundation.lazy.LazyColumn
+<span class="keyword">import</span> androidx.compose.foundation.shape.RoundedCornerShape
+<span class="keyword">import</span> androidx.compose.material.Text
+<span class="keyword">import</span> androidx.compose.runtime.Composable
+<span class="keyword">import</span> androidx.compose.ui.Alignment
+<span class="keyword">import</span> androidx.compose.ui.Modifier
+<span class="keyword">import</span> androidx.compose.ui.draw.shadow
+<span class="keyword">import</span> androidx.compose.ui.graphics.Color
+<span class="keyword">import</span> androidx.compose.ui.tooling.preview.Devices
+<span class="keyword">import</span> androidx.compose.ui.tooling.preview.Preview
+<span class="keyword">import</span> androidx.compose.ui.unit.dp
+<span class="keyword">import</span> androidx.compose.ui.unit.sp
+<span class="keyword">import</span> com.example.composetutorials.ui.components.StyleableTutorialText
+<span class="keyword">import</span> com.example.composetutorials.ui.components.TutorialHeader
+<span class="keyword">import</span> com.example.composetutorials.ui.components.TutorialText2
+
+<span class="annotation">@Preview</span>(showBackground = <span class="keyword">true</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">Tutorial1_1Screen</span>() {
+    <span class="function">TutorialContent</span>()
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">private fun</span> <span class="function">TutorialContent</span>() {
+    <span class="function">LazyColumn</span>(<span class="type">Modifier</span>.<span class="function">fillMaxSize</span>()) {
+        <span class="function">item</span> {
+            <span class="function">TutorialHeader</span>(text = <span class="string">"Row"</span>)
+            <span class="function">StyleableTutorialText</span>(
+                text = <span class="string">"1-) **Row** is a layout composable that places its children in a horizontal sequence."</span>
+            )
+            <span class="function">RowExample</span>()
+
+            <span class="function">TutorialHeader</span>(text = <span class="string">"Column"</span>)
+            <span class="function">StyleableTutorialText</span>(
+                text = <span class="string">"2-) **Column** is a layout composable that places its children in a vertical sequence."</span>
+            )
+            <span class="function">ColumnExample</span>()
+
+            <span class="function">StyleableTutorialText</span>(
+                text = <span class="string">"3-) Padding order determines whether it's padding or margin for that component."</span> +
+                       <span class="string">"In example below check out paddings."</span>
+            )
+            <span class="function">ColumnsAndRowPaddingsExample</span>()
+
+            <span class="function">StyleableTutorialText</span>(
+                text = <span class="string">"4-) Shadow can be applied to Column or Row."</span>
+            )
+            <span class="function">ShadowExample</span>()
+
+            <span class="function">TutorialHeader</span>(text = <span class="string">"Box"</span>)
+            <span class="function">StyleableTutorialText</span>(
+                text = <span class="string">"5-) **Box** aligns children on top of each other like a Stack. "</span> +
+                       <span class="string">"The one declared last is on top"</span>
+            )
+            <span class="function">BoxExample</span>()
+
+            <span class="function">StyleableTutorialText</span>(
+                text = <span class="string">"6-) Elements in Box can be aligned with different alignments."</span>
+            )
+            <span class="function">BoxShadowAndAlignmentExample</span>()
+
+            <span class="function">TutorialHeader</span>(text = <span class="string">"Spacer"</span>)
+            <span class="function">StyleableTutorialText</span>(
+                text = <span class="string">"7-) Spacer can be used to align elements to end or bottom of screen"</span>
+            )
+            <span class="function">WeightExample</span>()
+
+            <span class="function">TutorialHeader</span>(text = <span class="string">"Weight and Spacer"</span>)
+            <span class="function">StyleableTutorialText</span>(
+                text = <span class="string">"8-) **Weight** determines, based on total weight, how much of the parent's "</span> +
+                       <span class="string">"dimensions should be occupied by each child. **Spacer** is used to "</span> +
+                       <span class="string">"create horizontal or vertical "</span> +
+                       <span class="string">"space between components."</span>
+            )
+            <span class="function">WeightAndSpacerExample</span>()
+        }
+    }
+}</code>
+        </div>
+
+        <h3>11.1. Примеры Row</h3>
+        <div class="code-block">
+<code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">RowExample</span>() {
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.Start"</span>)
+    <span class="function">Row</span>(modifier = <span class="type">Modifier</span>.<span class="function">fillMaxWidth</span>(), horizontalArrangement = <span class="type">Arrangement</span>.<span class="property">Start</span>) {
+        <span class="function">RowTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.End"</span>)
+    <span class="function">Row</span>(modifier = <span class="type">Modifier</span>.<span class="function">fillMaxWidth</span>(), horizontalArrangement = <span class="type">Arrangement</span>.<span class="property">End</span>) {
+        <span class="function">RowTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.Center"</span>)
+    <span class="function">Row</span>(modifier = <span class="type">Modifier</span>.<span class="function">fillMaxWidth</span>(), horizontalArrangement = <span class="type">Arrangement</span>.<span class="property">Center</span>) {
+        <span class="function">RowTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.SpaceEvenly"</span>)
+    <span class="function">Row</span>(modifier = <span class="type">Modifier</span>.<span class="function">fillMaxWidth</span>(), horizontalArrangement = <span class="type">Arrangement</span>.<span class="property">SpaceEvenly</span>) {
+        <span class="function">RowTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.SpaceAround"</span>)
+    <span class="function">Row</span>(modifier = <span class="type">Modifier</span>.<span class="function">fillMaxWidth</span>(), horizontalArrangement = <span class="type">Arrangement</span>.<span class="property">SpaceAround</span>) {
+        <span class="function">RowTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.SpaceBetween"</span>)
+    <span class="function">Row</span>(modifier = <span class="type">Modifier</span>.<span class="function">fillMaxWidth</span>(), horizontalArrangement = <span class="type">Arrangement</span>.<span class="property">SpaceBetween</span>) {
+        <span class="function">RowTexts</span>()
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">RowTexts</span>() {
+    <span class="function">Text</span>(
+        text = <span class="string">"Row1"</span>,
+        modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFF9800</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+    )
+    <span class="function">Text</span>(
+        text = <span class="string">"Row2"</span>,
+        modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFA726</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+    )
+    <span class="function">Text</span>(
+        text = <span class="string">"Row3"</span>,
+        modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFB74D</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+    )
+}</code>
+        </div>
+
+        <h3>11.2. Примеры Column</h3>
+        <div class="code-block">
+<code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ColumnExample</span>() {
+    <span class="keyword">val</span> modifier = <span class="type">Modifier</span>
+        .<span class="function">padding</span>(<span class="number">8</span>.dp)
+        .<span class="function">fillMaxWidth</span>()
+        .<span class="function">height</span>(<span class="number">200</span>.dp)
+        .<span class="function">background</span>(<span class="type">Color</span>.<span class="property">LightGray</span>)
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.Top"</span>)
+    <span class="function">Column</span>(modifier = modifier, verticalArrangement = <span class="type">Arrangement</span>.<span class="property">Top</span>) {
+        <span class="function">ColumnTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.Bottom"</span>)
+    <span class="function">Column</span>(modifier = modifier, verticalArrangement = <span class="type">Arrangement</span>.<span class="property">Bottom</span>) {
+        <span class="function">ColumnTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.Center"</span>)
+    <span class="function">Column</span>(modifier = modifier, verticalArrangement = <span class="type">Arrangement</span>.<span class="property">Center</span>) {
+        <span class="function">ColumnTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.SpaceEvenly"</span>)
+    <span class="function">Column</span>(modifier = modifier, verticalArrangement = <span class="type">Arrangement</span>.<span class="property">SpaceEvenly</span>) {
+        <span class="function">ColumnTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.SpaceAround"</span>)
+    <span class="function">Column</span>(modifier = modifier, verticalArrangement = <span class="type">Arrangement</span>.<span class="property">SpaceAround</span>) {
+        <span class="function">ColumnTexts</span>()
+    }
+
+    <span class="function">TutorialText2</span>(text = <span class="string">"Arrangement.SpaceBetween"</span>)
+    <span class="function">Column</span>(modifier = modifier, verticalArrangement = <span class="type">Arrangement</span>.<span class="property">SpaceBetween</span>) {
+        <span class="function">ColumnTexts</span>()
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ColumnTexts</span>() {
+    <span class="function">Text</span>(
+        text = <span class="string">"Column1"</span>,
+        modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF8BC34A</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+    )
+    <span class="function">Text</span>(
+        text = <span class="string">"Column2"</span>,
+        modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF9CCC65</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+    )
+    <span class="function">Text</span>(
+        text = <span class="string">"Column3"</span>,
+        modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFAED581</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+    )
+}</code>
+        </div>
+
+        <h3>11.3. Пример Padding и Background</h3>
+        <div class="code-block">
+<code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ColumnsAndRowPaddingsExample</span>() {
+    <span class="keyword">val</span> rowModifier = <span class="type">Modifier</span>
+        .<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFF06292</span>))
+        .<span class="function">fillMaxWidth</span>()
+        .<span class="function">wrapContentHeight</span>()
+
+    <span class="comment">// 🔥 Padding после Yellow background оставляет пространство внутри контейнера</span>
+    <span class="keyword">val</span> modifierA = <span class="type">Modifier</span>
+        .<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFEB3B</span>))
+        .<span class="function">padding</span>(<span class="number">15</span>.dp)
+
+    <span class="comment">// 🔥 Padding(10dp) перед голубым цветом действует как отступ (margin)</span>
+    <span class="keyword">val</span> modifierB = <span class="type">Modifier</span>
+        .<span class="function">padding</span>(<span class="number">10</span>.dp)
+        .<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF80DEEA</span>))
+        .<span class="function">padding</span>(end = <span class="number">15</span>.dp)
+
+    <span class="keyword">val</span> modifierC = <span class="type">Modifier</span>
+        .<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF607D8B</span>))
+        .<span class="function">padding</span>(<span class="number">15</span>.dp)
+
+    <span class="function">Row</span>(modifier = rowModifier, horizontalArrangement = <span class="type">Arrangement</span>.<span class="property">SpaceEvenly</span>) {
+        <span class="function">Column</span>(
+            modifier = modifierA
+                .<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFFFFF</span>))
+                .<span class="function">padding</span>(<span class="number">8</span>.dp)
+        ) {
+            <span class="function">Text</span>(text = <span class="string">"Text A1"</span>)
+            <span class="function">Text</span>(text = <span class="string">"Text A2"</span>)
+            <span class="function">Text</span>(text = <span class="string">"Text A3"</span>)
+        }
+
+        <span class="function">Column</span>(
+            modifier = modifierB
+                .<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF9575CD</span>))
+                .<span class="function">padding</span>(top = <span class="number">12</span>.dp, bottom = <span class="number">22</span>.dp)
+        ) {
+            <span class="function">Text</span>(text = <span class="string">"Text B1"</span>)
+            <span class="function">Text</span>(text = <span class="string">"Text B2"</span>)
+            <span class="function">Text</span>(text = <span class="string">"Text B3"</span>)
+        }
+
+        <span class="function">Column</span>(modifier = modifierC.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFB2FF59</span>))) {
+            <span class="function">Text</span>(text = <span class="string">"Text C1"</span>)
+            <span class="function">Text</span>(text = <span class="string">"Text C2"</span>)
+            <span class="function">Text</span>(text = <span class="string">"Text C3"</span>)
+        }
+    }
+}</code>
+        </div>
+
+        <h3>11.4. Пример Shadow</h3>
+        <div class="code-block">
+<code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ShadowExample</span>() {
+    <span class="function">Row</span>(
+        modifier = <span class="type">Modifier</span>
+            .<span class="function">padding</span>(<span class="number">8</span>.dp)
+            .<span class="function">shadow</span>(
+                elevation = <span class="number">4</span>.dp,
+                shape = <span class="type">RoundedCornerShape</span>(<span class="number">8</span>.dp)
+            )
+    ) {
+        <span class="function">RowTexts</span>()
+    }
+
+    <span class="function">Column</span>(
+        modifier = <span class="type">Modifier</span>
+            .<span class="function">padding</span>(<span class="number">8</span>.dp)
+            .<span class="function">shadow</span>(
+                elevation = <span class="number">4</span>.dp,
+                shape = <span class="type">RoundedCornerShape</span>(<span class="number">8</span>.dp)
+            )
+    ) {
+        <span class="function">ColumnTexts</span>()
+    }
+}</code>
+        </div>
+
+                <h3>11.5. Примеры Box</h3>
+        <div class="code-block">
+<code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">BoxExample</span>() {
+    <span class="keyword">val</span> modifier = <span class="type">Modifier</span>
+        .<span class="function">fillMaxWidth</span>()
+        .<span class="function">height</span>(<span class="number">250</span>.dp)
+        .<span class="function">background</span>(<span class="type">Color</span>.<span class="property">LightGray</span>)
+
+    <span class="function">Box</span>(modifier = modifier) {
+        <span class="comment">// Это элемент на дне</span>
+        <span class="function">Text</span>(
+            text = <span class="string">"First"</span>,
+            modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF1976D2</span>)).<span class="function">size</span>(<span class="number">200</span>.dp),
+            color = <span class="type">Color</span>.<span class="property">White</span>
+        )
+        <span class="comment">// Это элемент посередине</span>
+        <span class="function">Text</span>(
+            text = <span class="string">"Second"</span>,
+            modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF2196F3</span>)).<span class="function">size</span>(<span class="number">150</span>.dp),
+            color = <span class="type">Color</span>.<span class="property">White</span>
+        )
+        <span class="comment">// Это элемент сверху</span>
+        <span class="function">Text</span>(
+            text = <span class="string">"Third"</span>,
+            modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF64B5F6</span>)).<span class="function">size</span>(<span class="number">100</span>.dp),
+            color = <span class="type">Color</span>.<span class="property">White</span>
+        )
+    }
+}</code>
+        </div>
+
+        <h3>11.6. Box с Shadow и Alignment</h3>
+        <div class="code-block">
+<code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">BoxShadowAndAlignmentExample</span>() {
+    <span class="function">Box</span>(
+        modifier = <span class="type">Modifier</span>
+            .<span class="function">fillMaxWidth</span>()
+            .<span class="function">height</span>(<span class="number">250</span>.dp)
+            .<span class="function">background</span>(<span class="type">Color</span>.<span class="property">LightGray</span>)
+            .<span class="function">padding</span>(<span class="number">8</span>.dp)
+    ) {
+        <span class="function">Box</span>(
+            modifier = <span class="type">Modifier</span>.<span class="function">shadow</span>(
+                elevation = <span class="number">4</span>.dp,
+                shape = <span class="type">RoundedCornerShape</span>(<span class="number">8</span>.dp)
+            )
+        ) {
+            <span class="comment">// Элемент на дне</span>
+            <span class="function">Text</span>(
+                text = <span class="string">"First"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFA000</span>)).<span class="function">size</span>(<span class="number">200</span>.dp),
+                color = <span class="type">Color</span>.<span class="property">White</span>
+            )
+        }
+
+        <span class="function">Box</span>(
+            modifier = <span class="type">Modifier</span>
+                .<span class="function">shadow</span>(elevation = <span class="number">8</span>.dp, shape = <span class="type">RoundedCornerShape</span>(<span class="number">8</span>.dp))
+                .<span class="function">align</span>(<span class="type">Alignment</span>.<span class="property">TopEnd</span>)
+        ) {
+            <span class="comment">// Элемент посередине</span>
+            <span class="function">Text</span>(
+                text = <span class="string">"Second"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFC107</span>)).<span class="function">size</span>(<span class="number">150</span>.dp),
+                color = <span class="type">Color</span>.<span class="property">White</span>
+            )
+        }
+
+        <span class="keyword">val</span> modifier = <span class="type">Modifier</span>
+            .<span class="function">shadow</span>(elevation = <span class="number">4</span>.dp, shape = <span class="type">RoundedCornerShape</span>(<span class="number">8</span>.dp))
+            .<span class="function">align</span>(<span class="type">Alignment</span>.<span class="property">BottomStart</span>)
+
+        <span class="function">Box</span>(modifier = modifier) {
+            <span class="comment">// Элемент сверху</span>
+            <span class="function">Text</span>(
+                text = <span class="string">"Third"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFD54F</span>)).<span class="function">size</span>(<span class="number">100</span>.dp),
+                color = <span class="type">Color</span>.<span class="property">White</span>
+            )
+        }
+    }
+}</code>
+        </div>
+
+        <h3>11.7. Примеры Weight и Spacer</h3>
+        <div class="code-block">
+<code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">WeightExample</span>() {
+    <span class="function">Column</span>(
+        modifier = <span class="type">Modifier</span>
+            .<span class="function">fillMaxWidth</span>()
+            .<span class="function">background</span>(<span class="type">Color</span>.<span class="property">LightGray</span>)
+    ) {
+        <span class="function">Row</span> {
+            <span class="function">Text</span>(
+                text = <span class="string">"Row1"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFF9800</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+            )
+            <span class="comment">// 🔥 Этот Spacer заполняет пространство между Row1 и остальными элементами</span>
+            <span class="function">Spacer</span>(modifier = <span class="type">Modifier</span>.<span class="function">weight</span>(<span class="number">1f</span>))
+            <span class="function">Text</span>(
+                text = <span class="string">"Row2"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFA726</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+            )
+            <span class="function">Text</span>(
+                text = <span class="string">"Row3"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFFFB74D</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+            )
+        }
+
+        <span class="function">Column</span>(modifier = <span class="type">Modifier</span>.<span class="function">height</span>(<span class="number">200</span>.dp)) {
+            <span class="function">Text</span>(
+                text = <span class="string">"Column1"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF8BC34A</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+            )
+            <span class="function">Spacer</span>(modifier = <span class="type">Modifier</span>.<span class="function">weight</span>(<span class="number">1f</span>))
+            <span class="function">Text</span>(
+                text = <span class="string">"Column2"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFF9CCC65</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+            )
+            <span class="function">Text</span>(
+                text = <span class="string">"Column3"</span>,
+                modifier = <span class="type">Modifier</span>.<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFAED581</span>)).<span class="function">padding</span>(<span class="number">4</span>.dp)
+            )
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">WeightAndSpacerExample</span>() {
+    <span class="comment">// Это родительский модификатор</span>
+    <span class="keyword">val</span> modifier = <span class="type">Modifier</span>
+        .<span class="function">fillMaxWidth</span>()
+        .<span class="function">height</span>(<span class="number">60</span>.dp)
+        .<span class="function">background</span>(<span class="type">Color</span>.<span class="property">LightGray</span>)
+
+    <span class="keyword">val</span> rowModifier = <span class="type">Modifier</span>
+        .<span class="function">fillMaxHeight</span>()
+        .<span class="function">background</span>(<span class="type">Color</span>(<span class="number">0xFFA1887F</span>))
+        .<span class="function">padding</span>(<span class="number">4</span>.dp)
+
+    <span class="function">Row</span>(modifier = modifier) {
+        <span class="function">Text</span>(
+            fontSize = <span class="number">12</span>.sp,
+            text = <span class="string">"Weight 2"</span>,
+            modifier = rowModifier.<span class="function">weight</span>(<span class="number">2f</span>)
+        )
+        <span class="comment">// Spacer создаёт пространство с заданной шириной/высотой</span>
+        <span class="function">Spacer</span>(modifier = modifier.<span class="function">weight</span>(<span class="number">1f</span>))
+        <span class="function">Text</span>(
+            fontSize = <span class="number">12</span>.sp,
+            text = <span class="string">"Weight 3"</span>,
+            modifier = rowModifier.<span class="function">weight</span>(<span class="number">3f</span>)
+        )
+        <span class="function">Spacer</span>(modifier = modifier.<span class="function">weight</span>(<span class="number">1f</span>))
+        <span class="function">Text</span>(
+            fontSize = <span class="number">12</span>.sp,
+            text = <span class="string">"Weight 4"</span>,
+            modifier = rowModifier.<span class="function">weight</span>(<span class="number">4f</span>)
+        )
+    }
+
+    <span class="comment">// Этот Spacer работает как отступ снизу компонента</span>
+    <span class="function">Spacer</span>(modifier = <span class="type">Modifier</span>.<span class="function">height</span>(<span class="number">16</span>.dp))
+}</code>
+        </div>
+
+        <h3>11.8. Preview для всего экрана</h3>
+        <div class="code-block">
+<code><span class="annotation">@Preview</span>(showBackground = <span class="keyword">true</span>)
+<span class="annotation">@Preview</span>(<span class="string">"dark"</span>, uiMode = <span class="type">Configuration</span>.<span class="property">UI_MODE_NIGHT_YES</span>)
+<span class="annotation">@Preview</span>(device = <span class="type">Devices</span>.<span class="property">PIXEL_C</span>, showBackground = <span class="keyword">true</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">private fun</span> <span class="function">Tutorial1_1Preview</span>() {
+    <span class="function">TutorialContent</span>()
+}</code>
+        </div>
+
+        <h3>Ключевые концепции, демонстрируемые в этом экране:</h3>
+        <table>
+            <tr><th>Компонент</th><th>Что демонстрирует</th></tr>
+            <tr><td><span class="inline-code">Row</span></td><td>Горизонтальное расположение, <span class="inline-code">Arrangement</span> (Start, End, Center, SpaceEvenly, SpaceAround, SpaceBetween)</td></tr>
+            <tr><td><span class="inline-code">Column</span></td><td>Вертикальное расположение, <span class="inline-code">Arrangement</span> (Top, Bottom, Center, SpaceEvenly, SpaceAround, SpaceBetween)</td></tr>
+            <tr><td><span class="inline-code">Modifier</span></td><td>Порядок модификаторов важен! <span class="inline-code">padding</span> до <span class="inline-code">background</span> = margin, после = внутренний отступ</td></tr>
+            <tr><td><span class="inline-code">shadow()</span></td><td>Тени с <span class="inline-code">elevation</span> и <span class="inline-code">shape</span></td></tr>
+            <tr><td><span class="inline-code">Box</span></td><td>Наложение элементов друг на друга (как Stack). Последний объявленный — сверху</td></tr>
+            <tr><td><span class="inline-code">align()</span></td><td>Выравнивание внутри Box (TopEnd, BottomStart и др.)</td></tr>
+            <tr><td><span class="inline-code">Spacer</span></td><td>Создание пустого пространства</td></tr>
+            <tr><td><span class="inline-code">weight()</span></td><td>Распределение пространства пропорционально весу</td></tr>
+        </table>
+    </div>
+
+    <!-- STEP 12 -->
+    <div class="step" id="step12">
+        <div class="step-header">
+            <div class="step-number">12</div>
+            <h2>Настройка MainActivity.kt</h2>
+        </div>
+
+        <p>Откройте <span class="inline-code">Tutorial1-1Basics/src/main/java/com/example/composetutorials/MainActivity.kt</span> и замените содержимое:</p>
+
+        <div class="code-block">
+            <span class="filename">MainActivity.kt</span>
+<code><span class="keyword">package</span> com.example.composetutorials
+
+<span class="keyword">import</span> android.os.Bundle
+<span class="keyword">import</span> androidx.activity.ComponentActivity
+<span class="keyword">import</span> androidx.activity.compose.setContent
+<span class="keyword">import</span> androidx.compose.foundation.layout.fillMaxSize
+<span class="keyword">import</span> androidx.compose.material3.MaterialTheme
+<span class="keyword">import</span> androidx.compose.material3.Surface
+<span class="keyword">import</span> androidx.compose.ui.Modifier
+
+<span class="keyword">class</span> <span class="type">MainActivity</span> : <span class="type">ComponentActivity</span>() {
+
+    <span class="keyword">override fun</span> <span class="function">onCreate</span>(savedInstanceState: <span class="type">Bundle</span>?) {
+        <span class="keyword">super</span>.<span class="function">onCreate</span>(savedInstanceState)
+
+        <span class="function">setContent</span> {
+            <span class="type">MaterialTheme</span> {
+                <span class="function">Surface</span>(
+                    modifier = <span class="type">Modifier</span>.<span class="function">fillMaxSize</span>(),
+                    color = <span class="type">MaterialTheme</span>.colorScheme.background
+                ) {
+                    <span class="comment">// ✅ Вызов основного экрана туториала</span>
+                    <span class="function">Tutorial1_1Screen</span>()
+                }
+            }
+        }
+    }
+}</code>
+        </div>
+
+        <h3>Пояснения:</h3>
+        <ul>
+            <li><span class="inline-code">ComponentActivity</span> — базовая Activity для Compose-приложений (не требует AppCompat)</li>
+            <li><span class="inline-code">setContent { }</span> — точка входа в Compose-иерархию</li>
+            <li><span class="inline-code">MaterialTheme</span> — обёртка с материалом Material 3 (тема, типографика, цвета)</li>
+            <li><span class="inline-code">Surface</span> — корневой контейнер с фоном из темы</li>
+            <li><span class="inline-code">Tutorial1_1Screen()</span> — наш экран туториала из шага 11</li>
+        </ul>
+
+        <div class="important">
+            Убедитесь, что вызывается именно <span class="inline-code">Tutorial1_1Screen()</span> (а не <span class="inline-code">TutorialContent()</span>). Функция <span class="inline-code">Tutorial1_1Screen()</span> помечена аннотацией <span class="inline-code">@Preview</span> и является публичной точкой входа, тогда как <span class="inline-code">TutorialContent()</span> — приватная.
+        </div>
+    </div>
+
+    <!-- STEP 13 -->
+    <div class="step" id="step13">
+        <div class="step-header">
+            <div class="step-number">13</div>
+            <h2>Синхронизация и запуск проекта</h2>
+        </div>
+
+        <h3>13.1. Синхронизация Gradle</h3>
+        <ol>
+            <li>Нажмите <strong>File → Sync Project with Gradle Files</strong> (или иконку слона 🐘 на панели инструментов)</li>
+            <li>Дождитесь завершения загрузки зависимостей (при первом запуске может занять несколько минут)</li>
+            <li>Проверьте вкладку <strong>Build</strong> внизу на наличие ошибок</li>
+        </ol>
+
+        <h3>13.2. Создание эмулятора</h3>
+        <ol>
+            <li>Откройте <strong>Tools → Device Manager</strong></li>
+            <li>Нажмите <strong>Create Virtual Device</strong></li>
+            <li>Выберите устройство (например, <strong>Pixel 7</strong>)</li>
+            <li>Выберите системный образ с <strong>API 35+</strong></li>
+            <li>Завершите создание</li>
+        </ol>
+
+        <h3>13.3. Запуск приложения</h3>
+        <ol>
+            <li>Выберите модуль <strong>Tutorial1-1Basics</strong> в конфигурации запуска (вверху рядом с кнопкой Run)</li>
+            <li>Выберите эмулятор или подключённое устройство</li>
+            <li>Нажмите <strong>▶ Run</strong> (или <span class="inline-code">Shift + F10</span>)</li>
+        </ol>
+
+        <div class="success">
+            После успешной сборки и запуска вы увидите приложение с прокручиваемым списком примеров:
+            <strong>Row → Column → Box → Spacer → Weight and Spacer</strong>. Каждый раздел содержит
+            визуальные примеры с пояснительным текстом.
+        </div>
+
+        <h3>13.4. Использование Preview</h3>
+        <p>Откройте файл <span class="inline-code">Tutorial1_1ColumnRowBoxScreen.kt</span> и переключитесь на вкладку <strong>Split</strong> или <strong>Design</strong> в правом верхнем углу редактора. Вы увидите превью для:</p>
+        <ul>
+            <li>Светлой темы</li>
+            <li>Тёмной темы</li>
+            <li>Планшета (PIXEL_C)</li>
+        </ul>
+
+        <div class="note">
+            Превью обновляются автоматически при изменении кода. Если превью не обновилось, нажмите иконку <strong>Build & Refresh</strong> на панели превью.
+        </div>
+    </div>
+
+    <!-- STEP 14 -->
+    <div class="step" id="step14">
+        <div class="step-header">
+            <div class="step-number">14</div>
+            <h2>Структура проекта и итоговая проверка</h2>
+        </div>
+
+        <h3>14.1. Итоговая структура проекта</h3>
+        <div class="file-tree">
+<span class="folder">📁 ComposeTutorials/</span>
+├── <span class="folder">📁 gradle/</span>
+│   ├── <span class="folder">📁 wrapper/</span>
+│   │   └── <span class="file">📄 gradle-wrapper.properties</span>
+│   ├── <span class="file">📄 gradle-daemon-jvm.properties</span>
+│   └── <span class="file">📄 libs.versions.toml</span>
+├── <span class="folder">📁 Tutorial1-1Basics/</span>
+│   ├── <span class="folder">📁 src/</span>
+│   │   └── <span class="folder">📁 main/</span>
+│   │       ├── <span class="folder">📁 java/</span>
+│   │       │   └── <span class="folder">📁 com/example/composetutorials/</span>
+│   │       │       ├── <span class="folder">📁 ui/</span>
+│   │       │       │   └── <span class="folder">📁 components/</span>
+│   │       │       │       └── <span class="file">📄 TutorialTexts.kt</span>
+│   │       │       ├── <span class="file">📄 MainActivity.kt</span>
+│   │       │       └── <span class="file">📄 Tutorial1_1ColumnRowBoxScreen.kt</span>
+│   │       └── <span class="file">📄 AndroidManifest.xml</span>
+│   └── <span class="file">📄 build.gradle.kts</span>
+├── <span class="file">📄 build.gradle.kts</span>          <span class="comment">(корневой)</span>
+├── <span class="file">📄 settings.gradle.kts</span>
+└── <span class="file">📄 gradle.properties</span>
+        </div>
+
+        <h3>14.2. Чек-лист проверки</h3>
+        <table>
+            <tr><th>✅</th><th>Что проверить</th></tr>
+            <tr><td>☐</td><td>Gradle версия 9.6.0 в <span class="inline-code">gradle-wrapper.properties</span></td></tr>
+            <tr><td>☐</td><td>AGP 9.4.0, Kotlin 2.4.20, JDK 25 в <span class="inline-code">libs.versions.toml</span></td></tr>
+            <tr><td>☐</td><td><span class="inline-code">android.builtInKotlin=true</span> и <span class="inline-code">android.newDsl=true</span> в <span class="inline-code">gradle.properties</span></td></tr>
+            <tr><td>☐</td><td>Модуль <span class="inline-code">Tutorial1-1Basics</span> подключён в <span class="inline-code">settings.gradle.kts</span></td></tr>
+            <tr><td>☐</td><td>Compose BOM подключён через <span class="inline-code">platform()</span></td></tr>
+            <tr><td>☐</td><td>Плагин <span class="inline-code">org.jetbrains.kotlin.plugin.compose</span> применён в модуле</td></tr>
+            <tr><td>☐</td><td><span class="inline-code">buildFeatures { compose = true }</span> установлен</td></tr>
+            <tr><td>☐</td><td><span class="inline-code">compileSdk = 37</span>, <span class="inline-code">minSdk = 24</span>, <span class="inline-code">targetSdk = 35</span></td></tr>
+            <tr><td>☐</td><td><span class="inline-code">sourceCompatibility/targetCompatibility = JavaVersion.VERSION_21</span></td></tr>
+            <tr><td>☐</td><td><span class="inline-code">MainActivity</span> вызывает <span class="inline-code">Tutorial1_1Screen()</span></td></tr>
+            <tr><td>☐</td><td>Gradle Sync проходит без ошибок</td></tr>
+            <tr><td>☐</td><td>Приложение запускается на эмуляторе</td></tr>
+        </table>
+
+        <h3>14.3. Частые проблемы и решения</h3>
+        <table>
+            <tr><th>Проблема</th><th>Решение</th></tr>
+            <tr>
+                <td>Ошибка «Plugin [id: com.android.application] was not found»</td>
+                <td>Убедитесь, что в <span class="inline-code">pluginManagement</span> указаны репозитории <span class="inline-code">google()</span> и <span class="inline-code">gradlePluginPortal()</span></td>
+            </tr>
+            <tr>
+                <td>Ошибка «Could not resolve androidx.compose:compose-bom»</td>
+                <td>Проверьте, что <span class="inline-code">google()</span> указан в <span class="inline-code">dependencyResolutionManagement</span></td>
+            </tr>
+            <tr>
+                <td>Превью не отображается</td>
+                <td>Нажмите Build & Refresh на панели превью. Убедитесь, что функция отмечена <span class="inline-code">@Preview</span> и не имеет параметров</td>
+            </tr>
+            <tr>
+                <td>«Unresolved reference: kotlin» в build.gradle.kts</td>
+                <td>В AGP 9+ не нужно применять плагин <span class="inline-code">kotlin-android</span> — Kotlin встроен</td>
+            </tr>
+            <tr>
+                <td>Ошибка компиляции с JDK</td>
+                <td>Проверьте, что в <span class="inline-code">gradle-daemon-jvm.properties</span> указана <span class="inline-code">toolchainVersion=25</span></td>
+            </tr>
+            <tr>
+                <td>Приложение падает при запуске</td>
+                <td>Проверьте <span class="inline-code">AndroidManifest.xml</span>: Activity должна быть <span class="inline-code">exported="true"</span> с intent-filter MAIN/LAUNCHER</td>
+            </tr>
+        </table>
+
+        <div class="divider"></div>
+
+        <h3>🎉 Поздравляем!</h3>
+        <p>Вы успешно создали проект <strong>Compose Tutorials</strong> с нуля! Теперь у вас есть рабочая база для изучения основ Jetpack Compose: <span class="inline-code">Row</span>, <span class="inline-code">Column</span>, <span class="inline-code">Box</span>, <span class="inline-code">Spacer</span>, <span class="inline-code">Weight</span> и <span class="inline-code">Modifier</span>.</p>
+
+        <h3>Следующие шаги для развития проекта:</h3>
+        <ul>
+            <li>Добавить модуль <strong>Tutorial1-2</strong> с темами и стилями</li>
+            <li>Добавить модуль <strong>Tutorial2-1</strong> с состоянием (State) в Compose</li>
+            <li>Добавить модуль <strong>Tutorial3-1</strong> с анимациями</li>
+            <li>Настроить навигацию между туториалами через <span class="inline-code">androidx.navigation:navigation-compose</span> (зависимость уже подключена)</li>
+            <li>Добавить поддержку системных иконок через <span class="inline-code">material-icons-extended</span> (зависимость уже подключена)</li>
+        </ul>
+    </div>
+
+</div>
+
+<footer>
+    <p>📖 Compose Tutorials — Пошаговое руководство разработчика</p>
+    <p>Создано на основе анализа репозитория проекта • Сентябрь 2026</p>
+    <p>Kotlin 2.4.20 • AGP 9.4.0 • Gradle 9.6.0 • Compose BOM 2026.08.00</p>
+</footer>
+
+</body>
+</html>
