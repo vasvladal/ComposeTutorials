@@ -1,7 +1,9 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.parcelize)
+    // Убрано: alias(libs.plugins.kotlin.android) - не нужно в AGP 9.0+
+    //alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.compose)
 }
 
@@ -34,8 +36,10 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 
-//    kotlinOptions {
-//        jvmTarget = "17"
+//    kotlin {
+//        compilerOptions {
+//            jvmTarget.set(JvmTarget.JVM_21)
+//        }
 //    }
 
     buildFeatures {
@@ -44,10 +48,11 @@ android {
 }
 
 dependencies {
-    val composeBom = platform(libs.androidx.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    // Используем BOM для управления версиями Compose
+    implementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
 
+    // Основные зависимости
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.core.ktx)
@@ -64,13 +69,23 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // Lifecycle & Navigation
+    // Lifecycle & Navigation (на случай, если понадобится)
     implementation(libs.androidx.lifecycle.viewModelCompose)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.navigation.compose)
 
-    // Accompanist & Coil
+    // Accompanist
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.accompanist.drawablepainter)
     implementation(libs.accompanist.coil)
+
+    // Тестирование
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.core)
+    androidTestImplementation(libs.androidx.test.runner)
+    androidTestImplementation(libs.androidx.test.espresso.core)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.compose.ui.test)
+    androidTestImplementation(libs.androidx.compose.ui.test.manifest)
 }
