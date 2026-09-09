@@ -23,5 +23,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "ComposeTutorials"
-include(":app")
+include(":Tutorial1-1Basics")
  
